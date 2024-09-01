@@ -5,18 +5,46 @@ class AuthModel extends Model {
     super(); // Appelle le constructeur du modèle principal
   }
 
-  // Requête spécifique pour obtenir un utilisateur par son téléphone
-  getUserByPhone(phone) {
-    const sql = `
-        SELECT * 
-        FROM user 
-        WHERE phone = ?
-    `;
-    const params = [phone];
-    return this.query(sql, params);
+  async registerUser(name, phone, email) {
+    const sql = 'INSERT INTO user (name, phone, e_mail) VALUES (?, ?, ?)';
+    const params = [name, phone, email];
+    try {
+      const result = await this.execute(sql, params);
+      return result.insertId;
+    } catch (error) {
+      throw error;
+    }
   }
 
-  // Autres requêtes spécifiques peuvent être ajoutées ici
+  async getUserByPhone(phone) {
+    const sql = 'SELECT * FROM user WHERE phone = ?';
+    try {
+      const user = await this.execute(sql, [phone]);
+      return user[0];
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getUserByEmail(email) {
+    const sql = 'SELECT * FROM user WHERE e_mail = ?';
+    try {
+      const user = await this.execute(sql, [email]);
+      return user[0];
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getRules() {
+    const sql = 'SELECT rules FROM app'; // Assurez-vous que cette table existe et contient les règles
+    try {
+      const rules = await this.execute(sql);
+      return rules;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = new AuthModel();
