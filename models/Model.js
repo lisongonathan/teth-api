@@ -58,4 +58,4 @@ class Model {
   }
 }
 
-module.exports = new Model();
+module.exports = Model;

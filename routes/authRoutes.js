@@ -5,6 +5,6 @@ const router = express.Router();
 const AuthController = require('../controllers/AuthController');
 
 // Route pour récupérer tous les utilisateurs
-router.post('/', AuthController.getAllUsers);
+router.post('/', AuthController.login);
 
 module.exports = router;
