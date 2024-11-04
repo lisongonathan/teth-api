@@ -5,7 +5,7 @@ const path = require('path');
 class AuthController extends BaseController {
   constructor() {
     super();
-    this.model = AuthModel
+    this.authModel = AuthModel
   }
 
   splash(req, res) {
@@ -31,10 +31,11 @@ class AuthController extends BaseController {
     console.log(password, matricule)
     try {
       const user = await this.authModel.getUserByMatricule(matricule, password);
+  
       if (user) {
         res.json(this.sendResponse(res, 200, 'Utilisateur authentifié avec succès', user));
       } else {
-        res.json(this.sendResponse(res, 404, 'Utilisateur non trouvé'));
+        res.json(this.sendResponse(res, 404, 'Utilisateur non trouvé', user));
       }
     } catch (error) {
       res.json(this.sendResponse(res, 500, 'Erreur d\'authentification', error));
