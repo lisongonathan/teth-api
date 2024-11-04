@@ -16,10 +16,10 @@ class AuthModel extends Model {
     }
   }
 
-  async getUserByMatricule(matricule) {
-    const sql = 'SELECT * FROM user WHERE matricule = ?';
+  async getUserByMatricule(matricule, password) {
+    const sql = 'SELECT * FROM user WHERE matricule = ? AND mdp = ?';
     try {
-      const user = await this.execute(sql, [matricule]);
+      const user = await this.execute(sql, [matricule, password]);
       return user[0];
     } catch (error) {
       throw error;

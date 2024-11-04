@@ -7,9 +7,11 @@ class AuthController extends BaseController {
     super();
     this.model = AuthModel
   }
+
   splash(req, res) {
     res.sendFile(path.join(__dirname, '../public/images/splash.png')); // Assurez-vous que le fichier image existe
   }
+
 
   logo(req, res) {
     res.sendFile(path.join(__dirname, '../public//images/logo-dark.png')); // Assurez-vous que le fichier image existe
@@ -25,9 +27,9 @@ class AuthController extends BaseController {
   }
 
   async login(req, res) {
-    const { phone } = req.body;
+    const { matricule, password } = req.body;
     try {
-      const user = await this.authModel.getUserByMatricule(phone);
+      const user = await this.authModel.getUserByMatricule(matricule, password);
       if (user) {
         res.json(sendResponse(200, 'Utilisateur authentifié avec succès', user));
       } else {
