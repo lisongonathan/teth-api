@@ -30,7 +30,19 @@ class AuthModel extends Model {
     const sql = 'SELECT * FROM user WHERE e_mail = ?';
     try {
       const user = await this.execute(sql, [email]);
-      return user[0];
+      return user;
+
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async setPasswordUser(mdp, id) {
+    const sql = 'UPDATE user SET user.mdp = ? WHERE user.id = ?';
+
+    try {
+      const user = await this.execute(sql, [mdp, id]);
+      return user
     } catch (error) {
       throw error;
     }
