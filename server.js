@@ -5,10 +5,11 @@ const path = require('path');
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
-
+const cors = require('cors');
 /* 
     Déclarations
 */
+app.use(cors());
 
 // Port d'écoute du serveur
 const port = process.env.PORT || 8000;
