@@ -18,7 +18,7 @@ class Database {
           console.error('Erreur de connexion à la base de données :', err.stack);
           return;
         }
-        console.log('Connecté à la base de données MySQL en tant que ID ' + this.db.threadId);
+        console.log('Connecté à la base de données MySQL en tant que ID = ' + this.db.threadId);
       });
 
       instance = this;
