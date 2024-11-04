@@ -20,7 +20,7 @@ class AuthModel extends Model {
     const sql = 'SELECT * FROM user WHERE matricule = ? AND mdp = ?';
     try {
       const user = await this.execute(sql, [matricule, password]);
-      return user[0];
+      return user;
     } catch (error) {
       throw error;
     }

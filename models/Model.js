@@ -11,6 +11,7 @@ class Model {
   execute(sql, params) {
     return new Promise((resolve, reject) => {
       this.db.query(sql, params, (err, results) => {
+        
         if (err) {
           return reject({
             status: 500,

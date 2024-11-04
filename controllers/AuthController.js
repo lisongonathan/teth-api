@@ -28,12 +28,12 @@ class AuthController extends BaseController {
 
   async login(req, res) {
     const { matricule, password } = req.body;
-    console.log(password, matricule)
     try {
       const user = await this.authModel.getUserByMatricule(matricule, password);
+
   
-      if (user) {
-        res.json(this.sendResponse(res, 200, 'Utilisateur authentifié avec succès', user));
+      if (user.data.length) {
+        res.json(this.sendResponse(res, 200, 'Utilisateur authentifié avec succès', user.data[0]));
       } else {
         res.json(this.sendResponse(res, 404, 'Utilisateur non trouvé', user));
       }
