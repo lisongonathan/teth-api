@@ -13,9 +13,9 @@ class Controller {
      */
     sendResponse(res, status, msg, data = null) {
         res.status(status).json({
-        status: status,
-        msg: msg,
-        data: data
+          status: status,
+          msg: msg,
+          data: data
         });
     }
   }
