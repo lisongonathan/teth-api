@@ -27,7 +27,7 @@ class AuthController extends BaseController {
   async login(req, res) {
     const { phone } = req.body;
     try {
-      const user = await this.authModel.getUserByPhone(phone);
+      const user = await this.authModel.getUserByMatricule(phone);
       if (user) {
         res.json(sendResponse(200, 'Utilisateur authentifié avec succès', user));
       } else {

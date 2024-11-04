@@ -16,10 +16,10 @@ class AuthModel extends Model {
     }
   }
 
-  async getUserByPhone(phone) {
-    const sql = 'SELECT * FROM user WHERE phone = ?';
+  async getUserByMatricule(matricule) {
+    const sql = 'SELECT * FROM user WHERE matricule = ?';
     try {
-      const user = await this.execute(sql, [phone]);
+      const user = await this.execute(sql, [matricule]);
       return user[0];
     } catch (error) {
       throw error;
