@@ -58,18 +58,47 @@ class AdminController extends FinanceController {
     }
     
     async metrique (req, res) {
+        let recettes = {
+            var_1: "Solde recettes",
+            effe_1: 0,
+            var_2: "Parties perdues",
+            effe_2: 0,
+            icone: "pi-credit-card"
+        };
+
+        let depenses = {
+            var_1: "Solde dépenses",
+            effe_1: 0,
+            var_2: "Parties gagnées",
+            effe_2: 0,
+            icone: "pi-shopping-cart"
+        };
+
+        let users = {
+            var_1: "Utilisateurs",
+            effe_1: 0,
+            var_2: "Derniers connectées",
+            effe_2: 0,
+            icone: "pi-users"
+        }
+
+        let caisse = {
+            var_1: "Somme à rebours",
+            effe_1: 0,
+            var_2: "Parties",
+            effe_2: 0,
+            icone: "pi-wallet"
+        }
+
         try {
             return res.status(200).json({
                 status: 200,
                 msg: "Succès",
                 data: [
-                    {
-                        var_1: "Solde recettes",
-                        effe_1: 0,
-                        var_2: "Parties perdues",
-                        effe_2: 24,
-                        icon: "pi-shopping-cart"
-                    }
+                    recettes,
+                    depenses,
+                    users,
+                    caisse
                 ]
             })
         } catch (error) {

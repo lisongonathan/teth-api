@@ -5,7 +5,7 @@ const AdminController = require('../controllers/AdminController');
 const adminController = new AdminController();
 
 router.post('/', (req, res) => adminController.graphique(req, res));
-router.get('/', (req, res) => adminController.metrique(req, res));
+router.post('/metrique', (req, res) => adminController.metrique(req, res));
 
 
 module.exports = router;
