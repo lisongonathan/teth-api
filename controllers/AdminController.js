@@ -57,6 +57,30 @@ class AdminController extends FinanceController {
         }
     }
     
+    async metrique (req, res) {
+        try {
+            return res.status(200).json({
+                status: 200,
+                msg: "Succès",
+                data: [
+                    {
+                        var_1: "Solde recettes",
+                        effe_1: 0,
+                        var_2: "Parties perdues",
+                        effe_2: 24,
+                        icon: "pi-shopping-cart"
+                    }
+                ]
+            })
+        } catch (error) {
+            console.error("Erreur lors du traitement de la requête : ", error);
+            return res.status(500).json({
+                status: 500,
+                msg: "Erreur serveur",
+                error
+            })
+        }
+    }
     
 }
 
