@@ -32,7 +32,7 @@ class FinanceModel extends UserModel {
                     GROUP BY
                         j.id, MONTH(cj.date_cmd)
                     ORDER BY
-                        jeton_id, month;
+                        jeton_id, month
                     `
         
             try {

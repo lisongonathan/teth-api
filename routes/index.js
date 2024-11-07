@@ -7,13 +7,13 @@ const authRoutes = require('./authRoutes');
 const userRoutes = require('./userRoutes');
 const adminRoutes = require('./adminRoutes');
 const financeRoutes = require('./financeRoutes');
-// const accountRoutes = require('./accountRoutes');
+const questionRouter = require('./questionRoutes');
 
 // Utiliser les routes avec leurs préfixes respectifs
 router.use('/auth', authRoutes);
 router.use('/user', userRoutes);
 router.use('/admin', adminRoutes);
 router.use('/finance', financeRoutes);
-// router.use('/account', accountRoutes);
+router.use('/question', questionRouter);
 
 module.exports = router;
