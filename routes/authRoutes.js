@@ -2,8 +2,9 @@
 
 const express = require('express');
 const router = express.Router();
-const authController = require('../controllers/AuthController');
+const AuthController = require('../controllers/AuthController');
 
+const authController = new AuthController()
 // Route pour récupérer tous les utilisateurs
 router.get('/', (req, res) => authController.splash(req, res));
 router.get('/logo', (req, res) => authController.logo(req, res));

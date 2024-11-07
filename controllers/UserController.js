@@ -4,29 +4,33 @@ const UserModel = require('../models/UserModel');
 class UserController extends AuthController {
   constructor() {
     super();
-    this.userModel = UserModel
+    this.userModel = new UserModel();
 
 
   }
 
   async sessions(req, res) {
     const { id } = req.body;
+    console.log(id)
     try {
+      
       const result = await this.userModel.getUserSession(id);
-
-  
       if (result?.data.length) {
-        res.json(this.sendResponse(res, 200, 'Récupération sessions avec succès', result.data));
+        return res.json({ status: 200, message: 'Succès', data: result.data });
 
       } else {
-        res.json(this.sendResponse(res, 404, 'Sessions non trouvé', result));
+        return res.status(404).json({ status: 404, message: 'Non trouvé' });
 
       }
     } catch (error) {
-      res.json(this.sendResponse(res, 500, 'Erreur lors du traitement de la requette', error));
+      return res.status(500).json({ status: 500, message: 'Erreur serveur', error });
     }
+  }
+
+  hello(req, res) {
+    console.log(req)
   }
 
 }
 
-module.exports = new UserController();
+module.exports = UserController;

@@ -17,6 +17,7 @@ class AuthModel extends Model {
   }
 
   async getUserByMatricule(matricule, password) {
+    console.log(matricule)
     const sql = 'SELECT * FROM user WHERE matricule = ? AND mdp = ?';
     try {
       const user = await this.execute(sql, [matricule, password]);

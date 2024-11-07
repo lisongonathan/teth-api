@@ -2,7 +2,8 @@
 
 const express = require('express');
 const router = express.Router();
-const userController = require('../controllers/UserController');
+const UserController = require('../controllers/UserController');
+const userController = new UserController();
 
 // Route pour récupérer tous les utilisateurs
 // router.get('/', (req, res) => authController.splash(req, res));
@@ -11,6 +12,7 @@ const userController = require('../controllers/UserController');
 // router.post('/login', (req, res) => authController.login(req, res));
 // router.post('/recovery', (req, res) => authController.sendPassword(req, res));
 // router.post('/register', (req, res) => authController.register(req, res));
+
 router.post('/sessions', (req, res) => userController.sessions(req, res));
 
 module.exports = router;

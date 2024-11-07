@@ -13,11 +13,11 @@ class UserModel extends AuthModel {
     try {
       const result = await this.execute(sql, [id]);
       return result;
-      
+
     } catch (error) {
       throw error;
     }
   }
 }
 
-module.exports = new UserModel();
+module.exports = UserModel;

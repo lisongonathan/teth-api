@@ -30,5 +30,6 @@ require('./sockets')(io);
 
 // Démarrage du serveur
 http.listen(port, () => {
+    // console.log(app)
     console.log(`Server listening on port: ${port}`);
 });

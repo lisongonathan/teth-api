@@ -8,7 +8,7 @@ const crypto = require('crypto');
 class AuthController extends BaseController {
   constructor() {
     super();
-    this.authModel = AuthModel
+    this.authModel = new AuthModel()
 
     // Configuration de Nodemailer avec vos informations SMTP
     this.transporter = nodemailer.createTransport({
@@ -81,16 +81,17 @@ class AuthController extends BaseController {
   async login(req, res) {
     const { matricule, password } = req.body;
     try {
-      const user = await this.authModel.getUserByMatricule(matricule, password);
+      const result = await this.authModel.getUserByMatricule(matricule, password);
 
-  
-      if (user.data.length) {
-        res.json(this.sendResponse(res, 200, 'Utilisateur authentifié avec succès', user.data[0]));
+      if (result.data.length) {
+        return res.json({ status: 200, message: 'Succès', data: result.data });
+
       } else {
-        res.json(this.sendResponse(res, 404, 'Utilisateur non trouvé', user));
+        return res.status(404).json({ status: 404, message: 'Non trouvé' });
       }
     } catch (error) {
-      res.json(this.sendResponse(res, 500, 'Erreur d\'authentification', error));
+      console.log(error)
+      return res.status(500).json({ status: 500, message: 'Erreur serveur', error });
     }
   }
 
