@@ -109,7 +109,7 @@ class AuthController extends BaseController {
     
     try {
       const user = await this.authModel.getUserByEmail(email);
-
+      console.log(user)
       if (user.data.length) {
         // Envoyer un e-mail de récupération ou autre logique
         res.json(this.sendResponse(res, 200, 'Un mot de passe de récupération sera envoyé à votre addrese mail', user));
@@ -163,4 +163,4 @@ class AuthController extends BaseController {
 
 }
 
-module.exports = new AuthController();
+module.exports = AuthController;

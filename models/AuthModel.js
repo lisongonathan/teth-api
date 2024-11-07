@@ -47,7 +47,6 @@ class AuthModel extends Model {
       throw error;
     }
   }
-
   async getRules() {
     const sql = 'SELECT rules FROM app'; // Assurez-vous que cette table existe et contient les règles
     try {
@@ -59,4 +58,4 @@ class AuthModel extends Model {
   }
 }
 
-module.exports = new AuthModel();
+module.exports = AuthModel;
