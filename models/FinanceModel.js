@@ -91,6 +91,29 @@ class FinanceModel extends UserModel {
         }
     } 
 
+    async getVentesByJeton() {
+        const sql = `SELECT 
+                        jetons.designation AS modalite,                      -- Nom du jeton (ex. 'Jeton A')
+                        COALESCE(SUM(cmd_jeton.qte), 0) AS effectif         -- Quantité totale vendue, 0 si aucune vente
+                    FROM 
+                        jetons
+                    LEFT JOIN 
+                        cmd_jeton ON jetons.id = cmd_jeton.id_jeton 
+                        AND cmd_jeton.statut = 'OK'                          -- Seules les ventes avec statut 'OK'
+                    GROUP BY 
+                        jetons.designation  
+                    `
+        
+        try {
+            const result = await this.execute(sql, []);
+
+            return result;
+        } catch (error) {
+            throw error;
+            
+        }
+    } 
+
     async getAllTransactions(){
         const sql = `SELECT * FROM cagnotte`;
         try {

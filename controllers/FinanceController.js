@@ -157,6 +157,44 @@ class FinanceController extends UserController{
         }
     }
 
+    async camembert (req, res) {
+        let distribution = {variable : "Ventes des Jetons", population : 0};
+        let output = [];
+
+        try {
+            const rowVentes = await this.financeModel.getVentesByJeton();
+        
+            if (rowVentes?.data.length) {
+                distribution.population = rowVentes.data.length;
+                output.push(distribution);
+
+                rowVentes.data.forEach(row => {
+                                  
+                    output.push({
+                        modalite: row.modalite,
+                        effectif: row.effectif
+                    });
+                })
+
+            }
+            return res.status(200).json({
+                status: 200,
+                msg: "Succès",
+                data: output
+            });
+
+        } catch (error) {
+            console.error("Erreur lors du traitement de la requête : ", error);
+
+            return res.status(500).json({
+                status: 500,
+                msg: "Erreur serveur",
+                error
+            });
+        }
+        
+    }
+
 }
 
 module.exports = FinanceController

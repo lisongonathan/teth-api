@@ -174,12 +174,12 @@ class AdminController extends FinanceController {
                 })
 
             }
-
             return res.status(200).json({
                 status: 200,
                 msg: "Succès",
                 data: output
             });
+
         } catch (error) {
             console.error("Erreur lors du traitement de la requête : ", error);
 
