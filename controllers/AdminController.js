@@ -91,6 +91,42 @@ class AdminController extends FinanceController {
         }
 
         try {
+            const rowUsers = await this.adminModel.getAllUsers();
+            let lastConnected = 0;
+        
+            if (rowUsers?.data.length) {
+                rowUsers.data.forEach(row => {
+                    console.log("Current user ", row);
+
+                    if(row.statut == "True") lastConnected += 1;
+
+                })
+
+                users.effe_1 = rowUsers.data.length;
+                users.effe_2 = lastConnected;
+            }
+
+            const allPariesResult = await this.adminModel.getAllParties();
+
+            allPariesResult.data.forEach((partie) => {
+                caisse.effe_2 += 1;
+
+                if (partie.statut == 'OK') {
+                    depenses.effe_1 += 2000;
+                    depenses.effe_2 += 1;
+                } else {
+                    recettes.effe_1 += 500;
+                    recettes.effe_2 += 1;
+                }
+            })
+
+            depenses.effe_1 = `${depenses.effe_1} CDF`;
+            recettes.effe_1 = `${recettes.effe_1} CDF`;
+            users.effe_1 = `${users.effe_1} inscrit(s)`
+
+            const inforTransaction = await this.adminModel.getCapital();
+            inforTransaction.data.map(row => caisse.effe_1 = `${row.total_debit - row.total_credit} CDF`);
+
             return res.status(200).json({
                 status: 200,
                 msg: "Succès",

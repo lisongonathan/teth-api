@@ -99,29 +99,6 @@ class AdminModel extends FinanceModel {
         }
     }
 
-    async getAllTransactions(){
-        const sql = `SELECT * FROM caniote`;
-        try {
-            const result = await this.execute(sql, []);
-            return result;
-            
-        } catch (error) {
-            throw error;
-            
-        }
-    }
-
-    async getAllUsers(){
-        const sql = `SELECT * FROM client`;
-        try {
-            const result = await this.execute(sql, []);
-            return result;
-            
-        } catch (error) {
-            throw error;
-            
-        }
-    }
 }
 
 module.exports = AdminModel;

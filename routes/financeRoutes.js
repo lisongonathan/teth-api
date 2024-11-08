@@ -5,5 +5,6 @@ const FinanceController = require('../controllers/FinanceController');
 const financeController = new FinanceController();
 
 router.post('/', (req, res) => financeController.graphique(req, res));
+router.post('/metrique', (req, res) => financeController.metrique(req, res));
 
 module.exports = router;

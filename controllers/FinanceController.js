@@ -7,6 +7,7 @@ class FinanceController extends UserController{
 
         this.financeModel = new FinanceModel();
     }
+
     async graphique(req, res) {
         try {
             // Récupérer tous les jetons
@@ -56,7 +57,105 @@ class FinanceController extends UserController{
         }
     }
     
-    
+    async metrique (req, res) {
+        let recettes = {
+            var_1: "Solde ventes jetons",
+            effe_1: 0,
+            var_2: "Ventes",
+            effe_2: 0,
+            icone: "pi-credit-card"
+        };
+
+        let depenses = {
+            var_1: "Solde retraits",
+            effe_1: 0,
+            var_2: "Retraits en attente",
+            effe_2: 0,
+            icone: "pi-shopping-cart"
+        };
+
+        let users = {
+            var_1: "Jétons",
+            effe_1: 0,
+            var_2: "Points de ventes",
+            effe_2: 0,
+            icone: "pi-users"
+        }
+
+        let caisse = {
+            var_1: "Solde Debit",
+            effe_1: 0,
+            var_2: "Solde Credit",
+            effe_2: 0,
+            icone: "pi-wallet"
+        }
+
+        try {
+            const rowsJetons = await this.financeModel.getAllJetons();
+        
+            if (rowsJetons?.data.length) users.effe_1 = rowsJetons.data.length;
+
+            users.effe_1 = `${users.effe_1}`;
+
+            const rowsVendeurs = await this.financeModel.getAllVendeurs();
+
+            if(rowsVendeurs?.data.length) users.effe_2 = rowsVendeurs.data.length;
+
+            users.effe_2 = `${users.effe_2} Vendeurs`;
+
+            const rowsVentes = await this.financeModel.getVentesJetons();
+
+            if(rowsVentes?.data.length) {
+                recettes.effe_2 = rowsVentes.data.length;
+
+                rowsVentes.data.map(vente => {
+                    if(vente.cmd_state == "OK") recettes.effe_1 += vente.qte * vente.montant;
+                })
+            }
+
+            recettes.effe_1 = `${recettes.effe_1} CDF`;
+            
+            const inforTransaction = await this.financeModel.getCapital();
+            inforTransaction.data.map(row => {
+                caisse.effe_1 = `${row.total_debit} CDF`;
+                caisse.effe_2 = `${row.total_credit} CDF`;
+            });
+
+            const retraitsInfos = await this.financeModel.getAllRetraits();
+            if(retraitsInfos?.data.length) {
+                retraitsInfos.data.map(retrait =>{
+                    if(retrait.statut == "OK"){
+                        depenses.effe_1 += retrait.montant;
+                    } else {
+                        depenses.effe_2 += 1
+                    }
+                    
+                })
+            }
+
+            depenses.effe_1 = `${depenses.effe_1} CDF`;
+            // recettes.effe_1 = `${recettes.effe_1} CDF`;
+            // users.effe_1 = `${users.effe_1} inscrit(s)`
+
+            return res.status(200).json({
+                status: 200,
+                msg: "Succès",
+                data: [
+                    recettes,
+                    depenses,
+                    users,
+                    caisse
+                ]
+            })
+        } catch (error) {
+            console.error("Erreur lors du traitement de la requête : ", error);
+            return res.status(500).json({
+                status: 500,
+                msg: "Erreur serveur",
+                error
+            })
+        }
+    }
 
 }
 
