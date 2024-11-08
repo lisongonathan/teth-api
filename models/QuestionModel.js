@@ -70,6 +70,129 @@ class QuestionModel extends UserModel {
             
         }
     }
+
+    async getAllCategories(){
+        const sql = `SELECT * FROM categorie`;
+        try {
+            const result = await this.execute(sql, []);
+            return result;
+
+        } catch (error) {
+            throw error;
+            
+        }
+    }
+
+    async getAllQuestions(){
+        const sql = `SELECT * FROM question`;
+        try {
+            const result = await this.execute(sql, []);
+            return result;
+
+        } catch (error) {
+            throw error;
+            
+        }
+    }
+
+    async getAllNiveaux(){
+        const sql = `SELECT * FROM niveau`;
+        try {
+            const result = await this.execute(sql, []);
+            return result;
+
+        } catch (error) {
+            throw error;
+            
+        }
+    }
+
+    async getAllUsers(){
+        const sql = `SELECT * FROM client`;
+        try {
+            const result = await this.execute(sql, []);
+            return result;
+            
+        } catch (error) {
+            throw error;
+            
+        }
+    }
+
+    async getAllReussitesByCategorie(){
+        const sql = `
+                SELECT categorie.id, AVG(CASE WHEN jeu.statut = 'OK' THEN 1 ELSE 0 END) * 100 AS tauxReussite
+                FROM categorie
+                LEFT JOIN question ON question.id_categorie = categorie.id
+                LEFT JOIN jeu ON jeu.id_question = question.id
+                GROUP BY categorie.id`;
+        try {
+            const result = await this.execute(sql, []);
+            return result;
+
+        } catch (error) {
+            throw error;
+            
+        }
+    }
+
+    async getAvgDureeAllQuestions(){
+        const sql = `SELECT AVG(duree) AS dureeMoyenne FROM question`;
+        try {
+            const result = await this.execute(sql, []);
+            return result;
+
+        } catch (error) {
+            throw error;
+            
+        }
+    }
+
+    async getQuestionsNo(){
+        const sql = `
+                SELECT COUNT(*) AS totalQuestionsEchouees 
+                FROM jeu 
+                WHERE statut = 'NO'
+                    `;
+        try {
+            const result = await this.execute(sql, []);
+            return result;
+
+        } catch (error) {
+            throw error;
+            
+        }
+    }
+
+    async getQuestionsOk(){
+        const sql = `
+                SELECT COUNT(*) AS totalQuestionsReussites 
+                FROM jeu 
+                WHERE statut = 'OK'
+                    `;
+        try {
+            const result = await this.execute(sql, []);
+            return result;
+
+        } catch (error) {
+            throw error;
+            
+        }
+    }
+
+    async getOcuurQuestions(){
+        const sql = `
+                SELECT COUNT(*) / COUNT(DISTINCT id_question) AS frequenceMoyenneApparition
+                FROM jeu`;
+        try {
+            const result = await this.execute(sql, []);
+            return result;
+
+        } catch (error) {
+            throw error;
+            
+        }
+    }
 }
 
 module.exports = QuestionModel

@@ -61,82 +61,80 @@ class QuestionController extends UserController {
     }
 
     async metrique(req, res) {
+        let categories = {
+            var_1: "Catégories",
+            effe_1: 0,
+            var_2: "Questions/Catégorie",
+            effe_2: 0,
+            icone: "pi-filter-fill"
+        };
+
+        let questions = {
+            var_1: "Questions",
+            effe_1: 0,
+            var_2: "Occurrences questions",
+            effe_2: 0,
+            icone: "pi-question"
+        };
+
+        let niveaux = {
+            var_1: "Niveaux",
+            effe_1: 0,
+            var_2: "Joeurs/Niveau",
+            effe_2: 0,
+            icone: "pi-sitemap"
+        }
+
+        let performances = {
+            var_1: "Questions validées",
+            effe_1: 0,
+            var_2: "Questions non validées",
+            effe_2: 0,
+            icone: "pi-verified"
+        }
         try {
             // 1. Total Catégorie
-            const totalCategoriesResult = await this.execute(`SELECT COUNT(*) AS totalCategories FROM categorie`);
-            const totalCategories = totalCategoriesResult[0]?.totalCategories || 0;
-    
-            // 2. Taux moyen de réussites par catégorie
-            const tauxReussiteCategorieResult = await this.execute(`
-                SELECT categorie.id, AVG(CASE WHEN jeu.statut = 'OK' THEN 1 ELSE 0 END) * 100 AS tauxReussite
-                FROM categorie
-                LEFT JOIN question ON question.id_categorie = categorie.id
-                LEFT JOIN jeu ON jeu.id_question = question.id
-                GROUP BY categorie.id
-            `);
-            const tauxReussiteCategorie = tauxReussiteCategorieResult.map(row => ({
-                categorie_id: row.id,
-                tauxReussite: row.tauxReussite || 0
-            }));
-    
-            // 3. Total Question
-            const totalQuestionsResult = await this.execute(`SELECT COUNT(*) AS totalQuestions FROM question`);
-            const totalQuestions = totalQuestionsResult[0]?.totalQuestions || 0;
-    
-            // 4. Durée moyenne de question
-            const dureeMoyenneQuestionResult = await this.execute(`SELECT AVG(duree) AS dureeMoyenne FROM question`);
-            const dureeMoyenneQuestion = dureeMoyenneQuestionResult[0]?.dureeMoyenne || 0;
-    
-            // 5. Total Questions échouées
-            const totalQuestionsEchoueesResult = await this.execute(`
-                SELECT COUNT(*) AS totalQuestionsEchouees 
-                FROM jeu 
-                WHERE statut = 'NO'
-            `);
-            const totalQuestionsEchouees = totalQuestionsEchoueesResult[0]?.totalQuestionsEchouees || 0;
-    
-            // 6. Moyenne des questions par niveau
-            const moyenneQuestionsParNiveauResult = await this.execute(`
-                SELECT type, COUNT(*) / COUNT(DISTINCT id) AS moyenneQuestionsParNiveau
-                FROM question
-                GROUP BY type
-            `);
-            const moyenneQuestionsParNiveau = moyenneQuestionsParNiveauResult.map(row => ({
-                niveau: row.type,
-                moyenneQuestions: row.moyenneQuestionsParNiveau || 0
-            }));
-    
-            // 7. Total Questions réussies
-            const totalQuestionsReussitesResult = await this.execute(`
-                SELECT COUNT(*) AS totalQuestionsReussites 
-                FROM jeu 
-                WHERE statut = 'OK'
-            `);
-            const totalQuestionsReussites = totalQuestionsReussitesResult[0]?.totalQuestionsReussites || 0;
-    
-            // 8. Fréquence moyenne d'apparition des questions
-            const frequenceMoyenneApparitionResult = await this.execute(`
-                SELECT COUNT(*) / COUNT(DISTINCT id_question) AS frequenceMoyenneApparition
-                FROM jeu
-            `);
-            const frequenceMoyenneApparition = frequenceMoyenneApparitionResult[0]?.frequenceMoyenneApparition || 0;
-    
-            // Rassembler tous les résultats
+            const rowsCategories = await this.questionModel.getAllCategories();
+            if(rowsCategories?.data.length) categories.effe_1 = rowsCategories.data.length;
+
+            const rowsQuestions = await this.questionModel.getAllQuestions();
+            if(rowsQuestions?.data.length) {
+                questions.effe_1 = rowsQuestions.data.length;
+                categories.effe_2 = questions.effe_1/categories.effe_1;
+            };
+
+            const rowsOccures = await this.questionModel.getOcuurQuestions();
+            if(rowsOccures?.data.length) rowsOccures.data.map(occur => questions.effe_2 = occur.frequenceMoyenneApparition || 0);
+
+            const rowsNiveaux = await this.questionModel.getAllNiveaux();
+            if(rowsNiveaux?.data.length) niveaux.effe_1 = rowsNiveaux.data.length;
+
+            const rowsClients = await this.questionModel.getAllUsers();
+            if(rowsClients?.data.length) niveaux.effe_2 = rowsClients.data.length / niveaux.effe_1;
+
+            const rowsQuestionsOk = await this.questionModel.getQuestionsOk();
+            questions.effe_1 = rowsQuestionsOk?.data.length;
+
+            const rowsQuestionsNo = await this.questionModel.getQuestionsNo();
+            questions.effe_2 = rowsQuestionsNo?.data.length;
+
+            categories.effe_1 = `Total ${categories.effe_1}`;
+            categories.effe_2 = `Moyenne ${categories.effe_2}`;
+            questions.effe_1 = `Total ${questions.effe_1}`;
+            questions.effe_2 = `Moyenne ${questions.effe_2}`;
+            niveaux.effe_1 = `Total ${niveaux.effe_1}`;
+            niveaux.effe_2 = `Moyenne ${niveaux.effe_2}`;
+
             return res.status(200).json({
                 status: 200,
                 msg: "Succès",
-                data: {
-                    totalCategories,
-                    tauxReussiteCategorie,
-                    totalQuestions,
-                    dureeMoyenneQuestion,
-                    totalQuestionsEchouees,
-                    moyenneQuestionsParNiveau,
-                    totalQuestionsReussites,
-                    frequenceMoyenneApparition
-                }
-            });
-    
+                data: [
+                    categories,
+                    questions,
+                    niveaux,
+                    performances
+                ]
+            })
         } catch (error) {
             console.error("Erreur lors de la récupération des métriques : ", error);
             return res.status(500).json({ status: 500, message: "Erreur serveur", error });

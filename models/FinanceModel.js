@@ -103,18 +103,6 @@ class FinanceModel extends UserModel {
         }
     }
 
-    async getAllUsers(){
-        const sql = `SELECT * FROM client`;
-        try {
-            const result = await this.execute(sql, []);
-            return result;
-            
-        } catch (error) {
-            throw error;
-            
-        }
-    }
-
     async getAllRetraits(){
         const sql = `SELECT r.id, r.date_retrait, r.montant, r.statut, c.matricule, c.solde, c.photo, c.telephone, c.e_mail , u.matricule AS user_mat, u.image  AS user_photo, rl.designation AS user_role
                     FROM retrait r
