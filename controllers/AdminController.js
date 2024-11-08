@@ -149,29 +149,36 @@ class AdminController extends FinanceController {
 
     async camembert (req, res) {
         let distribution = {variable : "Agents", population : 0};
+        let output = [];
 
         try {
-            // const rowUsers = await this.adminModel.getAllUsers();
-            // let lastConnected = 0;
+            const rowAgent = await this.adminModel.getAllTypesUsers();
         
-            // if (rowUsers?.data.length) {
-            //     rowUsers.data.forEach(row => {
-            //         console.log("Current user ", row);
+            if (rowAgent?.data.length) {
+                rowAgent.data.forEach(row => {
+                    for (const key in row) {
+                        if (Object.prototype.hasOwnProperty.call(row, key)) {
+                            if (key == "population") {
+                                distribution.population = row[key];
+                                output.push(distribution);
 
-            //         if(row.statut == "True") lastConnected += 1;
+                            } else {
+                                output.push({
+                                    modalite: key,
+                                    effectif: row[key]
+                                });
+                            }
+                            
+                        }
+                    }
+                })
 
-            //     })
-
-            //     users.effe_1 = rowUsers.data.length;
-            //     users.effe_2 = lastConnected;
-            // }
+            }
 
             return res.status(200).json({
                 status: 200,
                 msg: "Succès",
-                data: [
-                    {...distribution},
-                ]
+                data: output
             });
         } catch (error) {
             console.error("Erreur lors du traitement de la requête : ", error);

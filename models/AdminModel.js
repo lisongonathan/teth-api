@@ -100,11 +100,18 @@ class AdminModel extends FinanceModel {
     }
 
     async getAllTypesUsers(){
-        const sql = `SELECT partie.id, categorie.designation, categorie.image, categorie.description, client.matricule, client.telephone, client.e_mail, client.solde, niveau.designation, partie.date_creation, partie.statut
-                    FROM partie
-                    INNER JOIN categorie ON categorie.id = partie.id_categorie
-                    INNER JOIN client ON client.id = partie.id_client
-                    INNER JOIN niveau ON niveau.id = client.id_niveau
+        const sql = `SELECT 
+                        u.population,
+                        SUM(CASE WHEN t.designation = 'Question' THEN 1 ELSE 0 END) AS 'Agents Questions',
+                        SUM(CASE WHEN t.designation = 'Finance' THEN 1 ELSE 0 END) AS 'Agents Finance',
+                        SUM(CASE WHEN t.designation = 'Client' THEN 1 ELSE 0 END) AS 'Agents Client',
+                        SUM(CASE WHEN t.designation = 'Vendeur' THEN 1 ELSE 0 END) AS 'Agents Vender'
+                    FROM (
+                        SELECT *, COUNT(user.id) population
+                        FROM user
+                    ) u
+                    INNER JOIN affectation ON affectation.id_user = u.id
+                    INNER JOIN role t ON t.id = affectation.id_role
                     `;
         try {
             const result = await this.execute(sql, []);
