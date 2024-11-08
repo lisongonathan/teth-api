@@ -107,18 +107,6 @@ class QuestionModel extends UserModel {
         }
     }
 
-    async getAllUsers(){
-        const sql = `SELECT * FROM client`;
-        try {
-            const result = await this.execute(sql, []);
-            return result;
-            
-        } catch (error) {
-            throw error;
-            
-        }
-    }
-
     async getAllReussitesByCategorie(){
         const sql = `
                 SELECT categorie.id, AVG(CASE WHEN jeu.statut = 'OK' THEN 1 ELSE 0 END) * 100 AS tauxReussite

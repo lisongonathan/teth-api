@@ -99,6 +99,23 @@ class AdminModel extends FinanceModel {
         }
     }
 
+    async getAllTypesUsers(){
+        const sql = `SELECT partie.id, categorie.designation, categorie.image, categorie.description, client.matricule, client.telephone, client.e_mail, client.solde, niveau.designation, partie.date_creation, partie.statut
+                    FROM partie
+                    INNER JOIN categorie ON categorie.id = partie.id_categorie
+                    INNER JOIN client ON client.id = partie.id_client
+                    INNER JOIN niveau ON niveau.id = client.id_niveau
+                    `;
+        try {
+            const result = await this.execute(sql, []);
+            return result;
+            
+        } catch (error) {
+            throw error;
+            
+        }
+    }
+
 }
 
 module.exports = AdminModel;

@@ -146,6 +146,44 @@ class AdminController extends FinanceController {
             })
         }
     }
+
+    async camembert (req, res) {
+        let distribution = {variable : "Agents", population : 0};
+
+        try {
+            // const rowUsers = await this.adminModel.getAllUsers();
+            // let lastConnected = 0;
+        
+            // if (rowUsers?.data.length) {
+            //     rowUsers.data.forEach(row => {
+            //         console.log("Current user ", row);
+
+            //         if(row.statut == "True") lastConnected += 1;
+
+            //     })
+
+            //     users.effe_1 = rowUsers.data.length;
+            //     users.effe_2 = lastConnected;
+            // }
+
+            return res.status(200).json({
+                status: 200,
+                msg: "Succès",
+                data: [
+                    {...distribution},
+                ]
+            });
+        } catch (error) {
+            console.error("Erreur lors du traitement de la requête : ", error);
+
+            return res.status(500).json({
+                status: 500,
+                msg: "Erreur serveur",
+                error
+            });
+        }
+        
+    }
     
 }
 
