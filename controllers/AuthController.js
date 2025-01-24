@@ -4,6 +4,7 @@ const path = require('path');
 const nodemailer = require('nodemailer');
 const { error, info } = require('console');
 const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
 
 class AuthController extends BaseController {
   constructor() {
@@ -33,30 +34,30 @@ class AuthController extends BaseController {
     return result;
   }
 
-  async cryptPassword(password){
-    const encoder = new TextEncoder();
-    const data = encoder.encode(password);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashHex = hashArray.map(
-        b => b.toString(16).padStart(2, '0')
-    )
-    .join('');
-    return hashHex;
+  // async cryptPassword(password){
+  //   const encoder = new TextEncoder();
+  //   const data = encoder.encode(password);
+  //   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  //   const hashArray = Array.from(new Uint8Array(hashBuffer));
+  //   const hashHex = hashArray.map(
+  //       b => b.toString(16).padStart(2, '0')
+  //   )
+  //   .join('');
+  //   return hashHex;
 
 
-  }
-
-  // async cryptPassword(password) {
-  //     return new Promise((resolve, reject) => {
-  //         try {
-  //             const hash = crypto.createHash('sha256').update(password, 'utf-8').digest('hex');
-  //             resolve(hash);
-  //         } catch (error) {
-  //             reject(error);
-  //         }
-  //     });
   // }
+
+  async cryptPassword(password) {
+      return new Promise((resolve, reject) => {
+          try {
+              const hash = crypto.createHash('sha256').update(password, 'utf-8').digest('hex');
+              resolve(hash);
+          } catch (error) {
+              reject(error);
+          }
+      });
+  }
   
 
   logo(req, res) {
@@ -74,11 +75,17 @@ class AuthController extends BaseController {
 
   async login(req, res) {
     const { matricule, password } = req.body;
+    const mdp = await this.cryptPassword(password)
+    console.log("Crypt mdp :", mdp)
+
     try {
-      const result = await this.authModel.getUserByMatricule(matricule, password);
+      const result = await this.authModel.getUserByMatricule(matricule, mdp);
 
       if (result.data.length) {
-        return res.json({ status: 200, message: 'Succès', data: result.data });
+        const user = { id: result.data[0].id, matricule: matricule };
+        const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        return res.json({ status: 200, message: 'Succès', data: result.data, token: token });
 
       } else {
         return res.status(404).json({ status: 404, message: 'Non trouvé' });
@@ -134,25 +141,29 @@ class AuthController extends BaseController {
       } 
 
      
-      // Utilisation de la fonction pour chiffrer un mot de passe
-      this.cryptPassword(password)
-        .then(async cryptPassword => {
-          try {
-            const response = await this.authModel.setPasswordUser(cryptPassword, user.id);
-            console.log(response)
-            if (response.data) {
-              // Envoyer un e-mail de récupération ou autre logique
-              res.json(this.sendResponse(res, 200, 'Oération reussit, vérifier dans votre boite de reception', response));
-            } else {
-              res.json(this.sendResponse(res, 404, 'Problème pendant le traitement', response));
-            }
-          } catch (error) {
-            res.json(this.sendResponse(res, 500, 'Erreur inattendu', error));
+    // Utilisation de la fonction pour chiffrer un mot de passe
+    this.cryptPassword(password)
+      .then(async cryptPassword => {
+        try {
+          const response = await this.authModel.setPasswordUser(cryptPassword, user.id);
+          console.log(response)
+          if (response.data) {
+            // Envoyer un e-mail de récupération ou autre logique
+            res.json(this.sendResponse(res, 200, 'Oération reussit, vérifier dans votre boite de reception', response));
+          } else {
+            res.json(this.sendResponse(res, 404, 'Problème pendant le traitement', response));
           }
+        } catch (error) {
+          res.json(this.sendResponse(res, 500, 'Erreur inattendu', error));
+        }
 
-        })
-        .catch(error => console.error('Erreur lors du hachage:', error));
+      })
+      .catch(error => console.error('Erreur lors du hachage:', error));
     })
+  }
+
+  async testApi (req, res){
+    this.sendResponse(res, 200, 'Data request', {test : req});
   }
 
 

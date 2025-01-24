@@ -17,8 +17,8 @@ class AuthModel extends Model {
   }
 
   async getUserByMatricule(matricule, password) {
-    console.log(matricule)
-    const sql = 'SELECT * FROM user WHERE matricule = ? AND mdp = ?';
+    
+    const sql = 'SELECT * FROM agent WHERE pseudo = ? AND mdp = ?';
     try {
       const user = await this.execute(sql, [matricule, password]);
       return user;

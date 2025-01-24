@@ -41,6 +41,7 @@ class UserController extends AuthController {
   async agents(req, res) {
     try {
       const users = await this.userModel.getAllUsers();
+      console.log(users)
       this.sendResponse(res, 200, 'Agents récupérés avec succès', users);
     } catch (error) {
       this.sendResponse(res, 500, 'Erreur lors de la récupération des agents', error);
