@@ -27,8 +27,24 @@ class UserController extends AuthController {
     }
   }
 
-  hello(req, res) {
-    console.log(req)
+
+  async splash(req, res) {
+    try {
+      const rules = await this.userModel.getAllUsers();
+      this.sendResponse(res, 200, 'Règles récupérées avec succès', rules);
+    } catch (error) {
+      this.sendResponse(res, 500, 'Erreur lors de la récupération des règles', error);
+    }
+
+  }
+
+  async agents(req, res) {
+    try {
+      const users = await this.userModel.getAllUsers();
+      this.sendResponse(res, 200, 'Agents récupérés avec succès', users);
+    } catch (error) {
+      this.sendResponse(res, 500, 'Erreur lors de la récupération des agents', error);
+    }
   }
 
 }

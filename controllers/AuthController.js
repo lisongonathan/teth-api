@@ -33,37 +33,31 @@ class AuthController extends BaseController {
     return result;
   }
 
-  // async cryptPassword(password){
-  //   const encoder = new TextEncoder();
-  //   const data = encoder.encode(password);
-  //   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  //   const hashArray = Array.from(new Uint8Array(hashBuffer));
-  //   const hashHex = hashArray.map(
-  //       b => b.toString(16).padStart(2, '0')
-  //   )
-  //   .join('');
-  //   return hashHex;
+  async cryptPassword(password){
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(
+        b => b.toString(16).padStart(2, '0')
+    )
+    .join('');
+    return hashHex;
 
 
+  }
+
+  // async cryptPassword(password) {
+  //     return new Promise((resolve, reject) => {
+  //         try {
+  //             const hash = crypto.createHash('sha256').update(password, 'utf-8').digest('hex');
+  //             resolve(hash);
+  //         } catch (error) {
+  //             reject(error);
+  //         }
+  //     });
   // }
-
-  async cryptPassword(password) {
-      return new Promise((resolve, reject) => {
-          try {
-              const hash = crypto.createHash('sha256').update(password, 'utf-8').digest('hex');
-              resolve(hash);
-          } catch (error) {
-              reject(error);
-          }
-      });
-  }
   
-
-
-  splash(req, res) {
-    res.sendFile(path.join(__dirname, '../public/images/splash.png')); // Assurez-vous que le fichier image existe
-  }
-
 
   logo(req, res) {
     res.sendFile(path.join(__dirname, '../public//images/logo-dark.png')); // Assurez-vous que le fichier image existe

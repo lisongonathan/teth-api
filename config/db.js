@@ -12,7 +12,7 @@ class Database {
         password: process.env.DB_PASSWORD,
         database: process.env.DB_NAME,
       });
-
+      
       this.db.connect((err) => {
         if (err) {
           console.error('Erreur de connexion à la base de données :', err.stack);

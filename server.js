@@ -9,7 +9,15 @@ const cors = require('cors');
 /* 
     Déclarations
 */
-app.use(cors());
+app.use(cors({
+    origin:'*'
+}));
+
+// Middleware pour loguer l'IP du requérant et l'endpoint demandé
+app.use((req, res, next) => {
+    console.log(`IP: ${req.ip}, Endpoint: ${req.originalUrl}`);
+    next();
+});
 
 // Port d'écoute du serveur
 const port = process.env.PORT || 8000;

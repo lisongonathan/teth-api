@@ -20,7 +20,7 @@ class UserModel extends AuthModel {
   }
 
   async getAllUsers(){
-      const sql = `SELECT * FROM client`;
+      const sql = `SELECT * FROM agent`;
       try {
           const result = await this.execute(sql, []);
           return result;
@@ -29,6 +29,16 @@ class UserModel extends AuthModel {
           throw error;
           
       }
+  }
+
+  async getRules() {
+    const sql = 'SELECT * FROM agent'; // Assurez-vous que cette table existe et contient les règles
+    try {
+      const rules = await this.execute(sql);
+      return rules;
+    } catch (error) {
+      throw error;
+    }
   }
 }
 

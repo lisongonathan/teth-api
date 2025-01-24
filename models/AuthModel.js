@@ -48,15 +48,6 @@ class AuthModel extends Model {
       throw error;
     }
   }
-  async getRules() {
-    const sql = 'SELECT rules FROM app'; // Assurez-vous que cette table existe et contient les règles
-    try {
-      const rules = await this.execute(sql);
-      return rules;
-    } catch (error) {
-      throw error;
-    }
-  }
 }
 
 module.exports = AuthModel;
