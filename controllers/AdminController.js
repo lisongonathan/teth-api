@@ -1,7 +1,8 @@
 const FinanceController = require('./FinanceController');
 const AdminModel = require('../models/AdminModel');
+const AuthController = require('./AuthController');
 
-class AdminController extends FinanceController {
+class AdminController extends AuthController {
     constructor() {
         super()
 
@@ -190,6 +191,15 @@ class AdminController extends FinanceController {
             });
         }
         
+    }
+
+    async statistique(req, res) {
+        try {
+            const stats = await this.adminModel.getCategoryStatsByLevel();
+            return res.json({ status: 200, message: 'Statistiques récupérées avec succès', stats });
+        } catch (error) {
+            return res.status(500).json({ status: 500, message: 'Erreur serveur', error });
+        }
     }
     
 }

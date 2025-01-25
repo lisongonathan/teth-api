@@ -1,6 +1,6 @@
-const UserModel = require('./UserModel');
+const AuthModel = require('./AuthModel');
 
-class QuestionModel extends UserModel {
+class QuestionModel extends AuthModel {
     constructor(){
         super()
     }
@@ -179,6 +179,20 @@ class QuestionModel extends UserModel {
         } catch (error) {
             throw error;
             
+        }
+    }
+
+    async getAssertionStatsByCategory() {
+        const sql = `
+            SELECT category, assertion, COUNT(*) as count
+            FROM questions
+            GROUP BY category, assertion
+        `;
+        try {
+            const result = await this.execute(sql);
+            return result;
+        } catch (error) {
+            throw error;
         }
     }
 }

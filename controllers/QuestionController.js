@@ -1,7 +1,7 @@
-const UserController = require('./UserController');
+const AuthController = require('./AuthController');
 const QuestionModel = require('../models/QuestionModel');
 
-class QuestionController extends UserController {
+class QuestionController extends AuthController {
     constructor() {
         super()
 
@@ -138,6 +138,15 @@ class QuestionController extends UserController {
         } catch (error) {
             console.error("Erreur lors de la récupération des métriques : ", error);
             return res.status(500).json({ status: 500, message: "Erreur serveur", error });
+        }
+    }
+
+    async statistique(req, res) {
+        try {
+            const stats = await this.questionModel.getAssertionStatsByCategory();
+            return res.json({ status: 200, message: 'Statistiques récupérées avec succès', stats });
+        } catch (error) {
+            return res.status(500).json({ status: 500, message: 'Erreur serveur', error });
         }
     }
     

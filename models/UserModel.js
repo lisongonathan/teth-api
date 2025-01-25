@@ -64,6 +64,26 @@ class UserModel extends AuthModel {
       throw error;
     }
   }
+
+  async getAllQuestions() {
+    const sql = `SELECT * FROM question`;
+    try {
+      const result = await this.execute(sql, []);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getAllCategories() {
+    const sql = `SELECT * FROM categorie`;
+    try {
+      const result = await this.execute(sql, []);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = UserModel;
