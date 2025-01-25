@@ -75,14 +75,14 @@ class AuthController extends BaseController {
         const password = this.generateRandomString(6);
         const message = `Salut ${user.data[0].pseudo} !! Votre nouveau mot de passe est : ${password}`;
         const resultNotif = await this.sendNotification(user.data[0].e_mail, message);
-        if (resultNotif) console.log('Notification ', resultNotif);
+        // if (resultNotif) console.log('Notification ', resultNotif);
         
         
         const hashedPassword = await this.cryptPassword(password);
-        if(hashedPassword) console.log('Mot de passe crypté', hashedPassword);
+        // if(hashedPassword) console.log('Mot de passe crypté', hashedPassword);
 
         const resultPassword = await this.authModel.updatePasswordAgent(hashedPassword, user.data[0].id);
-        if(resultPassword) console.log('Changement mot de passe', resultPassword);
+        // if(resultPassword) console.log('Changement mot de passe', resultPassword);
 
         this.sendResponse(res, 200, 'Un mot de passe de récupération sera envoyé à votre adresse mail')
         
