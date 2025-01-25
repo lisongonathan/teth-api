@@ -46,15 +46,20 @@ class UserController extends AuthController {
 
   async cagnote(req, res) {
     try {
+      let solde = 0.0;
+      let totalCagnotes;
+      let totalMisesGagnees;
+
       const cagnotes = await this.userModel.getAllCagnotes();
       const partiesGagnees = await this.userModel.getPartiesByStatus('OK');
-
-      const totalCagnotes = cagnotes.reduce((acc, cagnote) => acc + cagnote.amount, 0);
-      const totalMisesGagnees = partiesGagnees.reduce((acc, partie) => acc + partie.mise, 0);
-
-      const solde = totalCagnotes - totalMisesGagnees;
-
+      // console.log('Total cagnotes', cagnotes);
+      
+      totalCagnotes += cagnotes.data.reduce((acc, cagnote) => acc + cagnote.amount, 0);
+      totalMisesGagnees += partiesGagnees.data.reduce((acc, partie) => acc + partie.mise, 0);
+      solde += totalCagnotes - totalMisesGagnees;
+            
       return res.json({ status: 200, message: 'Solde récupéré avec succès', solde });
+
     } catch (error) {
       return res.status(500).json({ status: 500, message: 'Erreur serveur', error });
     }
