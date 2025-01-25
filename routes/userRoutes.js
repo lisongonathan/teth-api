@@ -12,5 +12,6 @@ router.use(authMiddleware);
 router.get('/cagnote', (req, res) => userController.cagnote(req, res));
 router.get('/parties', (req, res) => userController.parties(req, res));
 router.get('/users', (req, res) => userController.users(req, res));
+router.get('/', (req, res) => userController.metrique(req, res));
 
 module.exports = router;
