@@ -94,15 +94,15 @@ class UserController extends AuthController {
     try {
       const users = await this.userModel.getAllUsers();
 
-      const totalSolde = users.reduce((acc, user) => acc + user.solde, 0);
-      const nombreUsers = users.length;
+      const totalSolde = users.data.reduce((acc, user) => acc + parseFloat(user.solde), 0);
+      const nombreUsers = users.data.length;
 
       return res.json({
         status: 200,
         message: 'Utilisateurs récupérés avec succès',
         nombreUsers,
         totalSolde,
-        users
+        jouers: users.data
       });
     } catch (error) {
       return res.status(500).json({ status: 500, message: 'Erreur serveur', error });

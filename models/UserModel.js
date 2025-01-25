@@ -20,7 +20,7 @@ class UserModel extends AuthModel {
   }
 
   async getAllUsers(){
-      const sql = `SELECT * FROM users`;
+      const sql = `SELECT * FROM user`;
       try {
           const result = await this.execute(sql, []);
           return result;
