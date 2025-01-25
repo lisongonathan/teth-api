@@ -111,6 +111,7 @@ class UserController extends AuthController {
 
   async metrique(req, res) {
     const years = ['2024', '2025', '2026', '2027'];
+    const monthAbbreviations = ['Janv.', 'Fév.', 'Mars', 'Avril', 'Mai', 'Juin', 'Juil.', 'Août', 'Sept.', 'Oct.', 'Nov.', 'Déc.'];
     try {
       const metrics = {};
 
@@ -125,8 +126,9 @@ class UserController extends AuthController {
           const wonGames = await this.userModel.getPartiesByStatusAndDate('OK', startDate, endDate);
           const lostGames = await this.userModel.getPartiesByStatusAndDate('NO', startDate, endDate);
 
-          metrics[year].won[monthStr] = wonGames.data.length;
-          metrics[year].lost[monthStr] = lostGames.data.length;
+          const monthAbbr = monthAbbreviations[month - 1];
+          metrics[year].won[monthAbbr] = wonGames.data.length;
+          metrics[year].lost[monthAbbr] = lostGames.data.length;
         }
       }
 
