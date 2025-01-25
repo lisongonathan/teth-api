@@ -65,6 +65,17 @@ class UserModel extends AuthModel {
     }
   }
 
+  async getPartiesByStatusAndDate(status, startDate, endDate) {
+    const sql = `SELECT * FROM parties 
+                 WHERE status = ? AND date_creation BETWEEN ? AND ?`;
+    try {
+      const result = await this.execute(sql, [status, startDate, endDate]);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getAllQuestions() {
     const sql = `SELECT * FROM question`;
     try {

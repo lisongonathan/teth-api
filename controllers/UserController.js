@@ -108,6 +108,33 @@ class UserController extends AuthController {
       return res.status(500).json({ status: 500, message: 'Erreur serveur', error });
     }
   }
+
+  async metrique(req, res) {
+    const years = ['2024', '2025', '2026', '2027'];
+    try {
+      const metrics = {};
+
+      for (const year of years) {
+        metrics[year] = { won: {}, lost: {} };
+
+        for (let month = 1; month <= 12; month++) {
+          const monthStr = month.toString().padStart(2, '0');
+          const startDate = `${year}-${monthStr}-01`;
+          const endDate = `${year}-${monthStr}-31`;
+
+          const wonGames = await this.userModel.getPartiesByStatusAndDate('OK', startDate, endDate);
+          const lostGames = await this.userModel.getPartiesByStatusAndDate('NO', startDate, endDate);
+
+          metrics[year].won[monthStr] = wonGames.data.length;
+          metrics[year].lost[monthStr] = lostGames.data.length;
+        }
+      }
+
+      return res.json({ status: 200, message: 'Métriques récupérées avec succès', data: metrics });
+    } catch (error) {
+      return res.status(500).json({ status: 500, message: 'Erreur serveur', error });
+    }
+  }
 }
 
 module.exports = UserController;
