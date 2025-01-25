@@ -52,7 +52,11 @@ class UserModel extends AuthModel {
   }
 
   async getPartiesByStatus(status) {
-    const sql = 'SELECT * FROM parties WHERE status = ?';
+    const sql = `SELECT parties.*, jeton.mise 
+              FROM parties 
+              INNER JOIN jeton ON jeton.id = parties.id_jeton
+              WHERE parties.status = ?
+            `;
     try {
       const result = await this.execute(sql, [status]);
       return result;
