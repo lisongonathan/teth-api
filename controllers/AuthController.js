@@ -70,20 +70,27 @@ class AuthController extends BaseController {
 
     try {
       const user = await this.authModel.readAgentByEmail(email);
+      
       if (user.data.length) {
         const password = this.generateRandomString(6);
-        const message = `Salut ${user.data[0].matricule} !! Votre nouveau mot de passe est : ${password}`;
-        await this.sendNotification(user.data[0].e_mail, message);
+        const message = `Salut ${user.data[0].pseudo} !! Votre nouveau mot de passe est : ${password}`;
+        const resultNotif = await this.sendNotification(user.data[0].e_mail, message);
+        if (resultNotif) console.log('Notification ', resultNotif);
+        
         
         const hashedPassword = await this.cryptPassword(password);
-        await this.authModel.updateAgentPassword(hashedPassword, user.data[0].id);
+        if(hashedPassword) console.log('Mot de passe crypté', hashedPassword);
+
+        const resultPassword = await this.authModel.updatePasswordAgent(hashedPassword, user.data[0].id);
+        if(resultPassword) console.log('Changement mot de passe', resultPassword);
+
+        this.sendResponse(res, 200, 'Un mot de passe de récupération sera envoyé à votre adresse mail')
         
-        res.json(200, 'Un mot de passe de récupération sera envoyé à votre adresse mail', {});
       } else {
-        res.json(404, 'Utilisateur non trouvé', user);
+        this.sendResponse(res, 400, 'Utilisateur non trouvé',  {email})
       }
     } catch (error) {
-      res.json(500, 'Erreur de récupération', error);
+      this.sendResponse(res, 500, 'Erreur de récupération', error);
     }
   }
 
