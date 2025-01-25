@@ -13,5 +13,7 @@ router.get('/rules', (req, res) => authController.rules(req, res));
 router.post('/recovery', (req, res) => authController.sendPassword(req, res));
 router.post('/register', (req, res) => authController.register(req, res));
 router.post('/forgot', (req, res) => authController.forgot(req, res));
+router.post('/check-email', (req, res) => authController.checkEmail(req, res));
+router.post('/forget', (req, res) => authController.forget(req, res));
 
 module.exports = router;

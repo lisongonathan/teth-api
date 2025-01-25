@@ -28,7 +28,7 @@ class AuthModel extends Model {
   }
 
   async getUserByEmail(email) {
-    const sql = 'SELECT * FROM user WHERE e_mail = ?';
+    const sql = 'SELECT * FROM agent WHERE agent.e_mail=?';
     try {
       const user = await this.execute(sql, [email]);
       return user;
@@ -48,6 +48,30 @@ class AuthModel extends Model {
       throw error;
     }
   }
+
+  async getAgentByEmail(email) {
+    // Implement the logic to get agent by email
+  }
+
+  async updateAgentPassword(password, userId) {
+    // Implement the logic to update agent password
+  }
+
+  async getAgentByAuth(matricule, password) {
+    // Implement the logic to get agent by matricule and password
+  }
+
+  // async getUser(email) {
+  //   return new Promise((resolve, reject) => {
+  //     const query = 'SELECT * FROM users WHERE email = ?';
+  //     db.query(query, [email], (err, results) => {
+  //       if (err) {
+  //         return reject(err);
+  //       }
+  //       resolve(results);
+  //     });
+  //   });
+  // }
 }
 
 module.exports = AuthModel;
