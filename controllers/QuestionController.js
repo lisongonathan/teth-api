@@ -28,7 +28,7 @@ class QuestionController extends AuthController {
           categories.data.forEach(category => {
             const questionsInCategory = questions.data.filter(q => q.id_categorie === category.id);
             const questionsWithAssertion = questionsInCategory.filter(q => q.reponse === choice.id);
-            const proportion = questionsWithAssertion.length * 100 / questionsInCategory.length;
+            const proportion = (questionsWithAssertion.length * 100 / questions.data.length).toFixed(2);
 
             listCategories.push({
               categorie: category.designation,
