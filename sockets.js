@@ -18,7 +18,7 @@ module.exports = (io) => {
           socket.emit('token_expired');
           socket.disconnect();
           return;
-        }
+        } 
 
         // Vérifier si l'utilisateur est déjà connecté
         const existingSession = agentsConnected.find(agent => agent.user === user.id);
