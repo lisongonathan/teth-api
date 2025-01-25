@@ -11,6 +11,15 @@ module.exports = (io) => {
       try {
         const user = jwt.verify(token, process.env.JWT_SECRET);
 
+        // Vérifier si le token a expiré
+        const currentTime = Math.floor(Date.now() / 1000);
+        if (user.exp < currentTime) {
+          console.log('Token expired');
+          socket.emit('token_expired');
+          socket.disconnect();
+          return;
+        }
+
         // Vérifier si l'utilisateur est déjà connecté
         const existingSession = agentsConnected.find(agent => agent.user === user.id);
         if (!existingSession) {
@@ -29,7 +38,7 @@ module.exports = (io) => {
         }
       } catch (error) {
         console.log('Authentication error:', error);
-        socket.emit('unauthorized');
+        socket.emit('unauthorized', error);
         socket.disconnect();
       }
     });
