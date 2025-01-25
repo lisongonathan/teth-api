@@ -52,12 +52,13 @@ class UserController extends AuthController {
 
       const cagnotes = await this.userModel.getAllCagnotes();
       const partiesGagnees = await this.userModel.getPartiesByStatus('OK');
-      console.log('raws cagnotes', cagnotes);
+      console.log('raws parties', partiesGagnees);
       
-      totalCagnotes += cagnotes.data.reduce((acc, cagnote) => acc + parseFloat(cagnote.amount), 0);
-      console.log("Total cagnotes", totalCagnotes);
-
+      totalCagnotes += cagnotes.data.reduce((acc, cagnote) => acc + parseFloat(cagnote.amount), 0);      
       totalMisesGagnees += partiesGagnees.data.reduce((acc, partie) => acc + parseFloat(partie.mise), 0);
+      
+      console.log("Total parties", totalMisesGagnees);
+
       solde += totalCagnotes - totalMisesGagnees;
             
       return res.json({ status: 200, message: 'Solde récupéré avec succès', solde });
