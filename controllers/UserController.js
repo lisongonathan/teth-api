@@ -52,12 +52,12 @@ class UserController extends AuthController {
 
       const cagnotes = await this.userModel.getAllCagnotes();
       const partiesGagnees = await this.userModel.getPartiesByStatus('OK');
-      console.log('raws parties', partiesGagnees);
+      // console.log('raws parties', partiesGagnees);
       
       totalCagnotes += cagnotes.data.reduce((acc, cagnote) => acc + parseFloat(cagnote.amount), 0);      
       totalMisesGagnees += partiesGagnees.data.reduce((acc, partie) => acc + parseFloat(partie.mise), 0);
-      
-      console.log("Total parties", totalMisesGagnees);
+
+      // console.log("Total parties", totalMisesGagnees);
 
       solde += totalCagnotes - totalMisesGagnees;
             
@@ -73,11 +73,11 @@ class UserController extends AuthController {
       const partiesGagnees = await this.userModel.getPartiesByStatus('OK');
       const partiesEchouees = await this.userModel.getPartiesByStatus('NO');
 
-      const nombrePartiesGagnees = partiesGagnees.length;
-      const totalMisesGagnees = partiesGagnees.reduce((acc, partie) => acc + partie.mise, 0);
+      const nombrePartiesGagnees = partiesGagnees.data.length;
+      const totalMisesGagnees = partiesGagnees.data.reduce((acc, partie) => acc + parseFloat(partie.mise), 0);
 
-      const nombrePartiesEchouees = partiesEchouees.length;
-      const totalMisesEchouees = partiesEchouees.reduce((acc, partie) => acc + partie.mise, 0);
+      const nombrePartiesEchouees = partiesEchouees.data.length;
+      const totalMisesEchouees = partiesEchouees.data.reduce((acc, partie) => acc + parseFloat(partie.mise), 0);
 
       return res.json({
         status: 200,
