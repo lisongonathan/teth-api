@@ -95,6 +95,44 @@ class UserModel extends AuthModel {
       throw error;
     }
   }
+
+  async getAllTypesUsers(){
+    const sql = `SELECT detail_level.id, detail_level.date_creation, levels.designation, detail_level.id_user, user.solde
+              FROM detail_level
+              INNER JOIN user ON user.id = detail_level.id_user
+              INNER JOIN levels ON levels.id = detail_level.id_level
+            `;
+    try {
+        const result = await this.execute(sql, []);
+        return result;
+        
+    } catch (error) {
+        throw error;
+        
+    }
+  }
+
+  async getAllParties() {
+    const sql = `SELECT parties.*, detail_level.id_level
+        FROM parties
+        INNER JOIN detail_level ON detail_level.id_user = parties.id_user`;
+    try {
+        const result = await this.execute(sql, []);
+        return result;
+    } catch (error) {
+        throw error;
+    }
+  }
+
+  async getAllNiveaux() {
+    const sql = `SELECT * FROM levels`;
+    try {
+        const result = await this.execute(sql, []);
+        return result;
+    } catch (error) {
+        throw error;
+    }
+  }
 }
 
 module.exports = UserModel;

@@ -9,199 +9,53 @@ class AdminController extends AuthController {
         this.adminModel = new AdminModel();
     }
 
-    async graphique(req, res) {
-        // Initialisation des mois et des valeurs par défaut
-        const months = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
-        let recettes = Array(12).fill(0);  // Valeurs par défaut de 0 pour chaque mois
-        let depenses = Array(12).fill(0);  // Valeurs par défaut de 0 pour chaque mois
-    
-        try {
-            // Récupérer les données de recettes et de dépenses
-            const rowRecettes = await this.adminModel.getRecettesByMonths();
-            const rowDepenses = await this.adminModel.getDepensesByMonths();
-    
-            // Mapper les données de recettes pour les affecter au bon mois
-            if (rowRecettes?.data.length) {
-                rowRecettes.data.forEach(row => {
-                    const monthIndex = row.month - 1;  // Index du mois (0 pour janvier, etc.)
-                    recettes[monthIndex] = row.value;
-                });
-            }
-    
-            // Mapper les données de dépenses pour les affecter au bon mois
-            if (rowDepenses?.data.length) {
-                rowDepenses.data.forEach(row => {
-                    const monthIndex = row.month - 1;  // Index du mois (0 pour janvier, etc.)
-                    depenses[monthIndex] = row.value;
-                });
-            }
-            // Retourner les données formatées
-            return res.status(200).json({
-                status: 200,
-                msg: "Succès",
-                data: {
-                    months,
-                    0: {
-                        variable : "Recettes",
-                        distribution: [...recettes]
-                    },
-                    1: {
-                        variable: "Dépenses",
-                        distribution: [...depenses]
-                    }
-                }
-            });
-    
-        } catch (error) {
-            console.error("Erreur lors de la récupération des données : ", error);
-            return res.status(500).json({ status: 500, msg: "Erreur serveur", error });
-        }
-    }
-    
-    async metrique (req, res) {
-        let recettes = {
-            var_1: "Solde recettes",
-            effe_1: 0,
-            var_2: "Parties perdues",
-            effe_2: 0,
-            icone: "pi-credit-card"
-        };
-
-        let depenses = {
-            var_1: "Solde dépenses",
-            effe_1: 0,
-            var_2: "Parties gagnées",
-            effe_2: 0,
-            icone: "pi-shopping-cart"
-        };
-
-        let users = {
-            var_1: "Utilisateurs",
-            effe_1: 0,
-            var_2: "Derniers connectées",
-            effe_2: 0,
-            icone: "pi-users"
-        }
-
-        let caisse = {
-            var_1: "Somme à rebours",
-            effe_1: 0,
-            var_2: "Parties",
-            effe_2: 0,
-            icone: "pi-wallet"
-        }
-
-        try {
-            const rowUsers = await this.adminModel.getAllUsers();
-            let lastConnected = 0;
-        
-            if (rowUsers?.data.length) {
-                rowUsers.data.forEach(row => {
-                    console.log("Current user ", row);
-
-                    if(row.statut == "True") lastConnected += 1;
-
-                })
-
-                users.effe_1 = rowUsers.data.length;
-                users.effe_2 = lastConnected;
-            }
-
-            const allPariesResult = await this.adminModel.getAllParties();
-
-            allPariesResult.data.forEach((partie) => {
-                caisse.effe_2 += 1;
-
-                if (partie.statut == 'OK') {
-                    depenses.effe_1 += 2000;
-                    depenses.effe_2 += 1;
-                } else {
-                    recettes.effe_1 += 500;
-                    recettes.effe_2 += 1;
-                }
-            })
-
-            depenses.effe_1 = `${depenses.effe_1} CDF`;
-            recettes.effe_1 = `${recettes.effe_1} CDF`;
-            users.effe_1 = `${users.effe_1} inscrit(s)`
-
-            const inforTransaction = await this.adminModel.getCapital();
-            inforTransaction.data.map(row => caisse.effe_1 = `${row.total_debit - row.total_credit} CDF`);
-
-            return res.status(200).json({
-                status: 200,
-                msg: "Succès",
-                data: [
-                    recettes,
-                    depenses,
-                    users,
-                    caisse
-                ]
-            })
-        } catch (error) {
-            console.error("Erreur lors du traitement de la requête : ", error);
-            return res.status(500).json({
-                status: 500,
-                msg: "Erreur serveur",
-                error
-            })
-        }
-    }
-
-    async camembert (req, res) {
-        let distribution = {variable : "Agents", population : 0};
-        let output = [];
-
-        try {
-            const rowAgent = await this.adminModel.getAllTypesUsers();
-        
-            if (rowAgent?.data.length) {
-                rowAgent.data.forEach(row => {
-                    for (const key in row) {
-                        if (Object.prototype.hasOwnProperty.call(row, key)) {
-                            if (key == "population") {
-                                distribution.population = row[key];
-                                output.push(distribution);
-
-                            } else {
-                                output.push({
-                                    modalite: key,
-                                    effectif: row[key]
-                                });
-                            }
-                            
-                        }
-                    }
-                })
-
-            }
-            return res.status(200).json({
-                status: 200,
-                msg: "Succès",
-                data: output
-            });
-
-        } catch (error) {
-            console.error("Erreur lors du traitement de la requête : ", error);
-
-            return res.status(500).json({
-                status: 500,
-                msg: "Erreur serveur",
-                error
-            });
-        }
-        
-    }
-
     async statistique(req, res) {
         try {
-            const stats = await this.adminModel.getCategoryStatsByLevel();
-            return res.json({ status: 200, message: 'Statistiques récupérées avec succès', stats });
+            const categories = await this.adminModel.getAllCategories();
+            const parties = await this.adminModel.getAllParties();
+            const niveaux = await this.adminModel.getAllNiveaux();
+
+            let listCategories = [];
+
+            if (categories?.data.length && parties?.data.length && niveaux?.data.length) {
+                listCategories = categories.data.map(category => {
+                    let metrique = niveaux.data.map(niveau => {
+                        const partiesInCategory = this.filterPartiesByCategorie(category.id, parties.data)
+                        const partiesInCategoryAndNiveau = this.filterPartiesByNiveau(niveau.id, partiesInCategory);
+                        // console.log("Check matching", partiesInCategory, niveau)
+
+                        const effectif = partiesInCategoryAndNiveau.length;
+                        const proportion = (effectif * 100 / parties.data.length).toFixed(2);
+
+                        return {
+                            modalite: niveau.designation,
+                            effectif: effectif,
+                            proportion: proportion
+                        };
+                    });
+
+                    return {
+                        id: category.id,
+                        title: category.designation,
+                        metrique: metrique
+                    };
+                });
+            }
+
+            return res.json({ status: 200, message: 'Statistiques récupérées avec succès', data: listCategories });
         } catch (error) {
             return res.status(500).json({ status: 500, message: 'Erreur serveur', error });
         }
     }
-    
+
+    filterPartiesByNiveau(niveauId, parties) {
+        // console.log(parties)
+        return parties.filter(partie => partie.id_level === niveauId);
+    }
+
+    filterPartiesByCategorie(categorieId, parties) {
+        return parties.filter(partie =>  partie.id_categorie === categorieId);
+    }
 }
 
 module.exports = AdminController;

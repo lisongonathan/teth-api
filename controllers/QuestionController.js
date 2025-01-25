@@ -31,8 +31,8 @@ class QuestionController extends AuthController {
             const proportion = (questionsWithAssertion.length * 100 / questions.data.length).toFixed(2);
 
             listCategories.push({
-              categorie: category.designation,
-              question: questionsWithAssertion.length,
+              modalite: category.designation,
+              effectif: questionsWithAssertion.length,
               proportion: proportion
             });
           });
