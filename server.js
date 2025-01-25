@@ -5,9 +5,7 @@ const path = require('path');
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
-const cors = require('cors', {
-    origin: '*'
-});
+const cors = require('cors');
 
 // Array to store request logs
 const requests = [];
@@ -53,6 +51,5 @@ require('./sockets')(io);
 
 // Démarrage du serveur
 http.listen(port, () => {
-    // console.log(app)
     console.log(`Server listening on port: ${port}`);
 });
