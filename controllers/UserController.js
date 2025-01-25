@@ -5,8 +5,6 @@ class UserController extends AuthController {
   constructor() {
     super();
     this.userModel = new UserModel();
-
-
   }
 
   async sessions(req, res) {
@@ -27,7 +25,6 @@ class UserController extends AuthController {
     }
   }
 
-
   async splash(req, res) {
     try {
       const rules = await this.userModel.getAllUsers();
@@ -35,7 +32,6 @@ class UserController extends AuthController {
     } catch (error) {
       this.sendResponse(res, 500, 'Erreur lors de la récupération des règles', error);
     }
-
   }
 
   async agents(req, res) {
@@ -48,6 +44,62 @@ class UserController extends AuthController {
     }
   }
 
+  async cagnote(req, res) {
+    try {
+      const cagnotes = await this.userModel.getAllCagnotes();
+      const partiesGagnees = await this.userModel.getPartiesByStatus('OK');
+
+      const totalCagnotes = cagnotes.reduce((acc, cagnote) => acc + cagnote.amount, 0);
+      const totalMisesGagnees = partiesGagnees.reduce((acc, partie) => acc + partie.mise, 0);
+
+      const solde = totalCagnotes - totalMisesGagnees;
+
+      return res.json({ status: 200, message: 'Solde récupéré avec succès', solde });
+    } catch (error) {
+      return res.status(500).json({ status: 500, message: 'Erreur serveur', error });
+    }
+  }
+
+  async parties(req, res) {
+    try {
+      const partiesGagnees = await this.userModel.getPartiesByStatus('OK');
+      const partiesEchouees = await this.userModel.getPartiesByStatus('NO');
+
+      const nombrePartiesGagnees = partiesGagnees.length;
+      const totalMisesGagnees = partiesGagnees.reduce((acc, partie) => acc + partie.mise, 0);
+
+      const nombrePartiesEchouees = partiesEchouees.length;
+      const totalMisesEchouees = partiesEchouees.reduce((acc, partie) => acc + partie.mise, 0);
+
+      return res.json({
+        status: 200,
+        message: 'Parties récupérées avec succès',
+        partiesGagnees: { nombre: nombrePartiesGagnees, solde: totalMisesGagnees },
+        partiesEchouees: { nombre: nombrePartiesEchouees, solde: totalMisesEchouees }
+      });
+    } catch (error) {
+      return res.status(500).json({ status: 500, message: 'Erreur serveur', error });
+    }
+  }
+
+  async users(req, res) {
+    try {
+      const users = await this.userModel.getAllUsers();
+
+      const totalSolde = users.reduce((acc, user) => acc + user.solde, 0);
+      const nombreUsers = users.length;
+
+      return res.json({
+        status: 200,
+        message: 'Utilisateurs récupérés avec succès',
+        nombreUsers,
+        totalSolde,
+        users
+      });
+    } catch (error) {
+      return res.status(500).json({ status: 500, message: 'Erreur serveur', error });
+    }
+  }
 }
 
 module.exports = UserController;

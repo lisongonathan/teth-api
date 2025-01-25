@@ -20,7 +20,7 @@ class UserModel extends AuthModel {
   }
 
   async getAllUsers(){
-      const sql = `SELECT * FROM agent`;
+      const sql = `SELECT * FROM users`;
       try {
           const result = await this.execute(sql, []);
           return result;
@@ -36,6 +36,26 @@ class UserModel extends AuthModel {
     try {
       const rules = await this.execute(sql);
       return rules;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getAllCagnotes() {
+    const sql = 'SELECT * FROM cagnotes';
+    try {
+      const result = await this.execute(sql);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getPartiesByStatus(status) {
+    const sql = 'SELECT * FROM parties WHERE status = ?';
+    try {
+      const result = await this.execute(sql, [status]);
+      return result;
     } catch (error) {
       throw error;
     }
