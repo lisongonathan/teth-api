@@ -51,7 +51,7 @@ class AuthController extends BaseController {
     const hashedPassword = await this.cryptPassword(password);
 
     try {
-      const result = await this.authModel.getAgentByAuth(matricule, hashedPassword);
+      const result = await this.authModel.readAgentByAuth(matricule, hashedPassword);
 
       if (result.data.length) {
         const user = { id: result.data[0].id, matricule: matricule };
@@ -69,27 +69,30 @@ class AuthController extends BaseController {
     const { email } = req.body;
 
     try {
-      const user = await this.authModel.getAgentByEmail(email);
+      const user = await this.authModel.readAgentByEmail(email);
       if (user.data.length) {
         const password = this.generateRandomString(6);
-        await this.sendNotification(user.data[0], password);
+        const message = `Salut ${user.data[0].matricule} !! Votre nouveau mot de passe est : ${password}`;
+        await this.sendNotification(user.data[0].e_mail, message);
+        
         const hashedPassword = await this.cryptPassword(password);
         await this.authModel.updateAgentPassword(hashedPassword, user.data[0].id);
-        res.json(this.sendResponse(res, 200, 'Un mot de passe de récupération sera envoyé à votre adresse mail', user));
+        
+        res.json(200, 'Un mot de passe de récupération sera envoyé à votre adresse mail', {});
       } else {
-        res.json(this.sendResponse(res, 404, 'Utilisateur non trouvé', user));
+        res.json(404, 'Utilisateur non trouvé', user);
       }
     } catch (error) {
-      res.json(this.sendResponse(res, 500, 'Erreur de récupération', error));
+      res.json(500, 'Erreur de récupération', error);
     }
   }
 
-  async sendNotification(user, password) {
+  async sendNotification(recipient, message, subject = "Récupération du compte") {
     const mailOptions = {
       from: 'teth@alwaysdata.net',
-      to: user.e_mail,
-      subject: "Récupération du compte",
-      text: `Salut ${user.matricule} !! Votre nouveau mot de passe est : ${password}`,
+      to: recipient,
+      subject: subject,
+      text: message,
     };
 
     return new Promise((resolve, reject) => {
