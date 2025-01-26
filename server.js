@@ -6,16 +6,29 @@ const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const cors = require('cors');
-/* 
-    Déclarations
-*/
-app.use(cors({
-    origin:'*'
-}));
 
-// Middleware pour loguer l'IP du requérant et l'endpoint demandé
+// Array to store request logs
+const requests = [];
+
+// Middleware to log the IP and endpoint of the request
 app.use((req, res, next) => {
-    console.log(`IP: ${req.ip}, Endpoint: ${req.originalUrl}`);
+    const ip = req.ip;
+    const endpoint = req.originalUrl;
+    const time = new Date().toISOString();
+
+    // Find the existing record for the IP
+    let requestLog = requests.find(r => r.ip === ip);
+    if (!requestLog) {
+        requestLog = { ip: ip, endpoints: [] };
+        requests.push(requestLog);
+    }
+
+    // Add the new endpoint log
+    requestLog.endpoints.push({ time: time, endpoint: endpoint });
+
+    // Print the requests array to the console
+    console.log(JSON.stringify(requests, null, 2));
+
     next();
 });
 
@@ -38,6 +51,5 @@ require('./sockets')(io);
 
 // Démarrage du serveur
 http.listen(port, () => {
-    // console.log(app)
     console.log(`Server listening on port: ${port}`);
 });
