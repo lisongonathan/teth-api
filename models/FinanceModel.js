@@ -18,10 +18,9 @@ class FinanceModel extends UserModel {
             }
     }
 
-
     async getAllJetons() {
-        const sql = `SELECT id, designation
-            FROM jetons`
+        const sql = `SELECT *
+            FROM jeton`
         
             try {
                 const result = await this.execute(sql, []);
@@ -60,26 +59,12 @@ class FinanceModel extends UserModel {
     }    
 
     async getVentesJetons() {
-        const sql = `SELECT
-                        cj.id AS cmd_id,
-                        j.designation AS jeton_designation,
-                        cj.date_cmd,
-                        cj.qte,
-                        j.pieces,
-                        j.montant,
-                        u.matricule,
-                        u.image,
-                        u.telephone,
-                        u.e_mail,
-                     	pv.date_creation,
-                        cj.statut AS cmd_state
-                    FROM
-                        cmd_jeton cj
-                    INNER JOIN
-                        jetons j ON cj.id_jeton = j.id
-                    INNER JOIN point_vente pv ON pv.id = cj.id_point_vente
-                    INNER JOIN user u ON u.id = pv.id_user
-                    `
+        const sql = `SELECT detail_level.id_level, levels.designation, detail_level.id_user, user.solde, user.pseudo, user.telephone, detail_jeton.id_jeton, detail_jeton.statut, detail_jeton.ref, detail_jeton.id
+              FROM detail_level
+              INNER JOIN user ON user.id = detail_level.id_user
+              INNER JOIN levels ON levels.id = detail_level.id_level
+              INNER JOIN detail_jeton ON detail_jeton.id_user = user.id
+            `
         
         try {
             const result = await this.execute(sql, []);

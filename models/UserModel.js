@@ -97,7 +97,7 @@ class UserModel extends AuthModel {
   }
 
   async getAllTypesUsers(){
-    const sql = `SELECT detail_level.id, detail_level.date_creation, levels.designation, detail_level.id_user, user.solde
+    const sql = `SELECT detail_level.id, detail_level.id_level, detail_level.date_creation, levels.designation, detail_level.id_user, user.solde, user.pseudo, user.telephone
               FROM detail_level
               INNER JOIN user ON user.id = detail_level.id_user
               INNER JOIN levels ON levels.id = detail_level.id_level
