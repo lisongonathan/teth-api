@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const AuthController = require('./AuthController');
 const UserModel = require('../models/UserModel');
 
@@ -133,6 +135,51 @@ class UserController extends AuthController {
       }
 
       return res.json({ status: 200, message: 'Métriques récupérées avec succès', data: metrics });
+    } catch (error) {
+      return res.status(500).json({ status: 500, message: 'Erreur serveur', error });
+    }
+  }
+
+  async avatar(req, res) {
+    const { id } = req.body;
+
+    const file = req.file;
+    if (!file) {
+      return res.status(400).json({ status: 400, message: 'Aucun fichier téléchargé' });
+    }
+
+    const timestamp = Date.now();
+    const extension = path.extname(file.originalname);
+    const filename = `${id}_${timestamp}${extension}`;
+    const filepath = path.join(__dirname, '../public/avatar/agents', filename);
+
+    try {
+      fs.writeFileSync(filepath, file.buffer);
+
+      const photoUrl = `/avatar/agents/${filename}`;
+      await this.userModel.updateUserPhoto(id, photoUrl);
+
+      return res.json({ status: 200, message: 'Photo de profil mise à jour avec succès', data: photoUrl });
+    } catch (error) {
+      return res.status(500).json({ status: 500, message: 'Erreur serveur', error });
+    }
+  }
+
+  async updateProfile(req, res) {
+    const { id, pseudo, nom, post_nom, sexe, description, e_mail } = req.body;
+    try {
+      const updatedProfile = await this.userModel.updateProfile(id, pseudo, nom, post_nom, sexe, description, e_mail);
+      return res.json({ status: 200, message: 'Profil mis à jour avec succès', data: updatedProfile });
+    } catch (error) {
+      return res.status(500).json({ status: 500, message: 'Erreur serveur', error });
+    }
+  }
+
+  async changePassword(req, res) {
+    const { id, mdp } = req.body;
+    try {
+      const updatedPassword = await this.userModel.changePassword(id, mdp);
+      return res.json({ status: 200, message: 'Mot de passe mis à jour avec succès', data: updatedPassword });
     } catch (error) {
       return res.status(500).json({ status: 500, message: 'Erreur serveur', error });
     }

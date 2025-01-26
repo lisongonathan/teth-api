@@ -42,6 +42,9 @@ app.use(express.json());
 // Middleware pour servir les fichiers statiques (si nécessaire)
 app.use(express.static(path.join(__dirname, './public')));
 
+// Servir des fichiers statiques depuis le dossier 'public'
+app.use('/public', express.static(path.join(__dirname, 'public')));
+
 // Utiliser le routeur principal pour toutes les routes
 const routes = require('./routes');
 app.use(routes);

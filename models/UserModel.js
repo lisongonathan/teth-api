@@ -133,6 +133,36 @@ class UserModel extends AuthModel {
         throw error;
     }
   }
+
+  async updateUserPhoto(id, photoUrl) {
+    const sql = `UPDATE agent SET photo = ? WHERE id = ?`;
+    try {
+      const result = await this.execute(sql, [photoUrl, id]);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateProfile(id, pseudo, nom, post_nom, sexe, description, e_mail) {
+    const sql = `UPDATE agent SET pseudo = ?, nom = ?, post_nom = ?, sexe = ?, description = ?, e_mail = ? WHERE id = ?`;
+    try {
+      const result = await this.execute(sql, [pseudo, nom, post_nom, sexe, description, e_mail, id]);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async changePassword(id, mdp) {
+    const sql = `UPDATE agent SET mdp = ? WHERE id = ?`;
+    try {
+      const result = await this.execute(sql, [mdp, id]);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = UserModel;
