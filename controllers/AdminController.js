@@ -49,7 +49,6 @@ class AdminController extends AuthController {
     }
 
     filterPartiesByNiveau(niveauId, parties) {
-        // console.log(parties)
         return parties.filter(partie => partie.id_level === niveauId);
     }
 
