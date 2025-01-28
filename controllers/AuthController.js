@@ -21,6 +21,11 @@ class AuthController extends BaseController {
     });
   }
 
+
+  async hello(req, res) {
+    res.json({status:200, message:'Bienvenu', data:'Teth vous dit Bonjour!!!'});
+  }
+
   generateRandomString(length) {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
