@@ -41,7 +41,10 @@ app.use(express.json());
 
 // Middleware pour servir les fichiers statiques (si nécessaire)
 app.use(express.static(path.join(__dirname, './public')));
-app.user(cors())
+app.use(cors({
+    origin: '*'
+}))
+
 // Utiliser le routeur principal pour toutes les routes
 const routes = require('./routes');
 app.use(routes);
