@@ -7,6 +7,10 @@ class UserController extends AuthController {
     this.userModel = new UserModel();
   }
 
+  async hello(req, res) {
+    res.json({status:200, message:'Bienvenu', data:'Teth vous dit Bonjour!!!'});
+  }
+
   async sessions(req, res) {
     const { id } = req.body;
     console.log(id)
