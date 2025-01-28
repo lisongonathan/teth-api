@@ -6,6 +6,7 @@ const AuthController = require('../controllers/AuthController');
 
 const authController = new AuthController()
 // Route pour récupérer tous les utilisateurs
+router.get('/', (req, res) => authController.hello(req, res));
 router.post('/', (req, res) => authController.login(req, res));
 router.post('/forget', (req, res) => authController.forget(req, res));
 
