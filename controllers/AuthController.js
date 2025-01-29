@@ -136,7 +136,12 @@ class AuthController extends BaseController {
       if (result) {
         // Create level of user
         await this.authModel.createLevelUser(result.data.insertId);
-        console.log(result);
+        const userInfo = await this.authModel.readUserById(result.data.insertId)
+        console.log(userInfo);
+
+        const parties = userInfo.data.parties + 1
+        // Create carte bonus of user
+        await this.authModel.updatePartiesUser(parties, result.data.insertId);
         return res.json({ status: 200, message: 'Succès', data: result.data.insertId });
       } else {
         return res.status(404).json({ status: 404, message: 'Non trouvé' });

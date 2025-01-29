@@ -40,6 +40,17 @@ class AuthModel extends Model {
     }
   }
 
+  // async createCarteUser(ref, id_user) {
+  //   const sql = 'INSERT INTO detail_jeton (id_jeton, ref, id_user) VALUES (?, ?)';
+  //   const params = [ref, id_user];
+  //   try {
+  //     const result = await this.execute(sql, params);
+  //     return result;
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
+
   async readAgentByAuth(matricule, password) {
     
     const sql = 'SELECT * FROM agent WHERE pseudo = ? AND mdp = ?';
@@ -50,6 +61,7 @@ class AuthModel extends Model {
       throw error;
     }
   }
+
   async readUserByAuth(matricule, password) {
     
     const sql = `SELECT user.*, levels.designation AS 'level'
@@ -64,6 +76,21 @@ class AuthModel extends Model {
       throw error;
     }
   }
+  
+  async readUserById(id) {
+    
+    const sql = `SELECT user.*, levels.designation AS 'level'
+                FROM user 
+                INNER JOIN detail_level ON detail_level.id_user = user.id
+                INNER JOIN levels ON levels.id = detail_level.id_level
+                WHERE id = ?`;
+    try {
+      const user = await this.execute(sql, [id]);
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
 
   async readAgentByEmail(email) {
     const sql = 'SELECT * FROM agent WHERE agent.e_mail=?';
@@ -71,6 +98,17 @@ class AuthModel extends Model {
       const user = await this.execute(sql, [email]);
       return user;
 
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updatePartiesUser(parties, id) {
+    const sql = 'UPDATE user SET user.parties = ? WHERE user.id = ?';
+
+    try {
+      const user = await this.execute(sql, [parties, id]);
+      return user
     } catch (error) {
       throw error;
     }
