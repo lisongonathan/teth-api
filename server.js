@@ -39,8 +39,6 @@ const port = process.env.PORT || 8000;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Middleware pour servir les fichiers statiques (si nécessaire)
-app.use(express.static(path.join(__dirname, './public')));
 app.use(cors({
     origin: '*'
 }))
