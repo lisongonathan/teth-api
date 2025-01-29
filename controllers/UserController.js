@@ -43,23 +43,30 @@ class UserController extends AuthController {
     }
   }
 
+  async sommeRebours(){
+    let solde = 0.0;
+    let totalCagnotes = 0.0;
+    let totalMisesGagnees = 0.0;
+
+    const cagnotes = await this.userModel.getAllCagnotes();
+    const partiesGagnees = await this.userModel.getPartiesByStatus('OK');
+    // console.log('raws parties', partiesGagnees);
+    
+    totalCagnotes += cagnotes.data.reduce((acc, cagnote) => acc + parseFloat(cagnote.amount), 0);      
+    totalMisesGagnees += partiesGagnees.data.reduce((acc, partie) => acc + parseFloat(partie.mise), 0);
+
+    // console.log("Total parties", totalMisesGagnees);
+
+    solde += totalCagnotes - totalMisesGagnees;
+
+    return solde;
+
+  }
+
   async cagnote(req, res) {
     try {
-      let solde = 0.0;
-      let totalCagnotes = 0.0;
-      let totalMisesGagnees = 0.0;
+      const solde = await this.sommeRebours();
 
-      const cagnotes = await this.userModel.getAllCagnotes();
-      const partiesGagnees = await this.userModel.getPartiesByStatus('OK');
-      // console.log('raws parties', partiesGagnees);
-      
-      totalCagnotes += cagnotes.data.reduce((acc, cagnote) => acc + parseFloat(cagnote.amount), 0);      
-      totalMisesGagnees += partiesGagnees.data.reduce((acc, partie) => acc + parseFloat(partie.mise), 0);
-
-      // console.log("Total parties", totalMisesGagnees);
-
-      solde += totalCagnotes - totalMisesGagnees;
-            
       return res.json({ status: 200, message: 'Solde récupéré avec succès', solde });
 
     } catch (error) {

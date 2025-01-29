@@ -1,14 +1,21 @@
 const jwt = require('jsonwebtoken');
-const FinanceModel = require('./models/FinanceModel');
-const QuestionModel = require('./models/QuestionModel');
+const AppController = require('./controllers/AppController');
 
 const agentsConnected = [];
-const model = {
-  finace: new FinanceModel(),
-  question: new QuestionModel()
-};
 
-const allCagnotes = model.finace.getAllTransactions();
+const Controller = new AppController();
+let sommeRebour;
+
+Controller.currentCagnote()
+.then(solde => {
+  console.log('Total somme à rebours : ', solde)
+
+  sommeRebour = solde;
+})
+.catch(error => {
+  console.error('Erreur recupération cagnote : ', error)
+})
+
 
 module.exports = (io) => {
   io.on('connection', (socket) => {
@@ -51,8 +58,6 @@ module.exports = (io) => {
       }
     });
 
-    socket.emit('allCagnotes', allCagnotes);
-
     socket.on('disconnect', () => {
       const index = agentsConnected.findIndex(agent => agent.socketId === socket.id);
       if (index !== -1) {
@@ -60,5 +65,7 @@ module.exports = (io) => {
         agentsConnected.splice(index, 1);
       }
     });
+
+    socket.emit('allCagnotes', sommeRebour);
   });
 };
