@@ -2,55 +2,72 @@ require('dotenv').config(); // Chargement des variables d'environnement
 
 const express = require('express');
 const path = require('path');
-const app = express();
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
+const http = require('http');
+const { Server } = require('socket.io');
 const cors = require('cors');
 
-// Array to store request logs
-const requests = [];
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"]
+    }
+});
 
-// Middleware to log the IP and endpoint of the request
+// Port d'écoute du serveur
+const PORT = process.env.PORT || 8000;
+
+// Array pour stocker les logs (max 100 entrées pour éviter la surcharge mémoire)
+const requests = [];
+const MAX_LOG_ENTRIES = 100;
+
+// Middleware pour journaliser les requêtes entrantes
 app.use((req, res, next) => {
     const ip = req.ip;
     const endpoint = req.originalUrl;
     const time = new Date().toISOString();
 
-    // Find the existing record for the IP
     let requestLog = requests.find(r => r.ip === ip);
     if (!requestLog) {
-        requestLog = { ip: ip, endpoints: [] };
+        requestLog = { ip, endpoints: [] };
         requests.push(requestLog);
     }
 
-    // Add the new endpoint log
-    requestLog.endpoints.push({ time: time, endpoint: endpoint });
+    requestLog.endpoints.push({ time, endpoint });
 
-    // Print the requests array to the console
+    // Limiter la taille des logs
+    if (requests.length > MAX_LOG_ENTRIES) {
+        requests.shift(); // Supprimer les plus anciens logs
+    }
+
     console.log(JSON.stringify(requests, null, 2));
 
     next();
 });
 
-// Port d'écoute du serveur
-const port = process.env.PORT || 8000;
-
-// Middleware pour analyser le corps des requêtes JSON
+// Middleware pour le parsing du JSON et des formulaires
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use(cors({
-    origin: '*'
-}))
+// Middleware pour servir les fichiers statiques
+app.use(express.static(path.join(__dirname, './public')));
+app.use(cors());
 
-// Utiliser le routeur principal pour toutes les routes
+// Chargement des routes
 const routes = require('./routes');
 app.use(routes);
 
 // Gestion des connexions WebSocket
 require('./sockets')(io);
 
+// Gestion des erreurs globales pour Express
+app.use((err, req, res, next) => {
+    console.error("Erreur serveur:", err);
+    res.status(500).json({ error: "Une erreur interne est survenue" });
+});
+
 // Démarrage du serveur
-http.listen(port, () => {
-    console.log(`Server listening on port: ${port}`);
+server.listen(PORT, () => {
+    console.log(`✅ Serveur en écoute sur le port : ${PORT}`);
 });
