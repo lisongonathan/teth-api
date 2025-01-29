@@ -5,7 +5,7 @@ class AuthModel extends Model {
     super(); // Appelle le constructeur du modèle principal
   }
 
-  async createUser(name, phone, email) {
+  async createAgent(name, phone, email) {
     const sql = 'INSERT INTO agent (name, phone, e_mail) VALUES (?, ?, ?)';
     const params = [name, phone, email];
     try {
@@ -16,9 +16,31 @@ class AuthModel extends Model {
     }
   }
 
+  async createUser(name, email, mdp) {
+    console.log({name, email, mdp})
+    const sql = 'INSERT INTO user (pseudo, e_mail, mdp) VALUES (?, ?, ?)';
+    const params = [name, email, mdp];
+    try {
+      const result = await this.execute(sql, params);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async readAgentByAuth(matricule, password) {
     
     const sql = 'SELECT * FROM agent WHERE pseudo = ? AND mdp = ?';
+    try {
+      const user = await this.execute(sql, [matricule, password]);
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+  async readUserByAuth(matricule, password) {
+    
+    const sql = 'SELECT * FROM user WHERE pseudo = ? AND mdp = ?';
     try {
       const user = await this.execute(sql, [matricule, password]);
       return user;
@@ -44,6 +66,26 @@ class AuthModel extends Model {
     try {
       const user = await this.execute(sql, [mdp, id]);
       return user
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async checkPseudoUser(pseudo) {
+    const sql = 'SELECT * FROM user WHERE pseudo = ?';
+    try {
+      const user = await this.execute(sql, [pseudo]);
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async checkMailUser(email) {
+    const sql = 'SELECT * FROM user WHERE e_mail = ?';
+    try {
+      const user = await this.execute(sql, [email]);
+      return user;
     } catch (error) {
       throw error;
     }

@@ -23,7 +23,18 @@ class AuthController extends BaseController {
 
 
   async hello(req, res) {
-    res.json({status:200, message:'Bienvenu', data:'Teth vous dit Bonjour!!!'});
+    const payload = { id: 1, name: "John Doe" }; // Exemple de données
+    const secret = process.env.JWT_SECRET; // Assure-toi que c'est bien défini
+    const options = { expiresIn: "1h" }; // Le token expire dans 1 heure
+
+    try {
+      const token = jwt.sign(payload, secret, options);
+      res.json({ success: true, token });
+    } catch (err) {
+      console.error("Erreur lors de la génération du token :", err.message);
+      res.status(500).json({ success: false, message: "Erreur interne du serveur" });
+    }
+    // res.json({status:200, message:'Bienvenu', data:'Teth vous dit Bonjour!!!'});
   }
 
   generateRandomString(length) {
@@ -48,7 +59,18 @@ class AuthController extends BaseController {
   }
 
   createToken(user) {
-    return jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const payload = user; // Exemple de données
+    const secret = process.env.JWT_SECRET; // Assure-toi que c'est bien défini
+    const options = { expiresIn: "1h" }; // Le token expire dans 1 heure
+
+    try {
+      const token = jwt.sign(payload, secret, options);
+      return token;
+      
+    } catch (err) {
+      console.error("Erreur lors de la génération du token :", err.message);
+      return { success: false, message: "Erreur interne du serveur" };
+    }
   }
 
   async login(req, res) {
@@ -57,11 +79,49 @@ class AuthController extends BaseController {
 
     try {
       const result = await this.authModel.readAgentByAuth(matricule, hashedPassword);
-
       if (result.data.length) {
         const user = { id: result.data[0].id, matricule: matricule };
         const token = this.createToken(user);
+        console.log("Token generation", token)
+        
         return res.json({ status: 200, message: 'Succès', data: result.data, token: token });
+      } else {
+        return res.status(404).json({ status: 404, message: 'Non trouvé' });
+      }
+    } catch (error) {
+      return res.status(500).json({ status: 500, message: 'Erreur serveur', error });
+    }
+  }
+
+  async signin(req, res) {
+    const { matricule, password } = req.body;
+    const hashedPassword = await this.cryptPassword(password);
+
+    try {
+      const result = await this.authModel.readUserByAuth(matricule, hashedPassword);
+      if (result.data.length) {
+        const user = { id: result.data[0].id, matricule: matricule };
+        const token = this.createToken(user);
+        console.log("Token generation", token)
+        
+        return res.json({ status: 200, message: 'Succès', data: result.data, token: token });
+      } else {
+        return res.status(404).json({ status: 404, message: 'Non trouvé' });
+      }
+    } catch (error) {
+      return res.status(500).json({ status: 500, message: 'Erreur serveur', error });
+    }
+  }
+
+  async signup(req, res) {
+    const { pseudo, e_mail, mdp } = req.body;
+    const hashedPassword = await this.cryptPassword(mdp);
+    
+    try {
+      const result = await this.authModel.createUser(pseudo, e_mail, hashedPassword);
+      console.log(result);
+      if (result) {        
+        return res.json({ status: 200, message: 'Succès', data: result.data.insertId});
       } else {
         return res.status(404).json({ status: 404, message: 'Non trouvé' });
       }
@@ -75,7 +135,7 @@ class AuthController extends BaseController {
 
     try {
       const user = await this.authModel.readAgentByEmail(email);
-      
+      console.log(user)
       if (user.data.length) {
         const password = this.generateRandomString(6);
         const message = `Salut ${user.data[0].pseudo} !! Votre nouveau mot de passe est : ${password}`;
@@ -116,6 +176,34 @@ class AuthController extends BaseController {
         }
       });
     });
+  }
+
+  async checkPseudoUser(req, res) {
+    const { pseudo } = req.body;
+    try {
+      const result = await this.authModel.checkPseudoUser(pseudo);
+      if (result.data.length) {
+        return res.json({ status: 200, message: 'Pseudo exists', data: result.data });
+      } else {
+        return res.status(404).json({ status: 404, message: 'Pseudo not found' });
+      }
+    } catch (error) {
+      return res.status(500).json({ status: 500, message: 'Server error', error });
+    }
+  }
+
+  async checkMailUser(req, res) {
+    const { email } = req.body;
+    try {
+      const result = await this.authModel.checkMailUser(email);
+      if (result.data.length) {
+        return res.json({ status: 200, message: 'Email exists', data: result.data });
+      } else {
+        return res.status(404).json({ status: 404, message: 'Email not found' });
+      }
+    } catch (error) {
+      return res.status(500).json({ status: 500, message: 'Server error', error });
+    }
   }
 }
 
