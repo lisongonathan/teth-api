@@ -136,10 +136,11 @@ class AuthController extends BaseController {
       if (result) {
         // Create level of user
         await this.authModel.createLevelUser(result.data.insertId);
+        await this .authModel.createNotification("Teth vous souhaite la bienvenu en vous offrant 3 parties", result.data.insertId)
         const userInfo = await this.authModel.readUserById(result.data.insertId)
         console.log(userInfo);
 
-        const parties = userInfo.data.parties + 1
+        const parties = userInfo.data.parties + 3
         // Create carte bonus of user
         await this.authModel.updatePartiesUser(parties, result.data.insertId);
         return res.json({ status: 200, message: 'Succès', data: result.data.insertId });

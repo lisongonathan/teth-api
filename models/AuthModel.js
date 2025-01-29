@@ -40,16 +40,16 @@ class AuthModel extends Model {
     }
   }
 
-  // async createCarteUser(ref, id_user) {
-  //   const sql = 'INSERT INTO detail_jeton (id_jeton, ref, id_user) VALUES (?, ?)';
-  //   const params = [ref, id_user];
-  //   try {
-  //     const result = await this.execute(sql, params);
-  //     return result;
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
+  async createNotification(message, id_user) {
+    const sql = 'INSERT INTO notification (id_user, message) VALUES (?, ?)';
+    const params = [id_user, message];
+    try {
+      const result = await this.execute(sql, params);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
 
   async readAgentByAuth(matricule, password) {
     

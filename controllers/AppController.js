@@ -18,6 +18,18 @@ class AppController extends UserController {
         }
     }
 
+    async notificationsUser(id){
+        const response = await this.appModel.getNotificationsByUser(id)
+
+        return response;
+    }
+
+    async readNotification(statut, id){
+        const response = await this.appModel.updateStatutNotification(statut, id)
+
+        return response;
+    }
+
     response (statut, message, data) {
         return {
             statut,
