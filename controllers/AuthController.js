@@ -116,12 +116,28 @@ class AuthController extends BaseController {
   async signup(req, res) {
     const { pseudo, e_mail, mdp } = req.body;
     const hashedPassword = await this.cryptPassword(mdp);
-    
+
     try {
+      // Check if pseudo already exists
+      const pseudoCheck = await this.authModel.checkPseudoUser(pseudo);
+      if (pseudoCheck.data.length) {
+        return res.status(400).json({ status: 400, message: 'Pseudo already exists' });
+      }
+
+      // Check if email already exists
+      const emailCheck = await this.authModel.checkMailUser(e_mail);
+      if (emailCheck.data.length) {
+        return res.status(400).json({ status: 400, message: 'Email already exists' });
+      }
+
+      // Create new user
       const result = await this.authModel.createUser(pseudo, e_mail, hashedPassword);
       console.log(result);
-      if (result) {        
-        return res.json({ status: 200, message: 'Succès', data: result.data.insertId});
+      if (result) {
+        // Create level of user
+        await this.authModel.createLevelUser(result.data.insertId);
+        console.log(result);
+        return res.json({ status: 200, message: 'Succès', data: result.data.insertId });
       } else {
         return res.status(404).json({ status: 404, message: 'Non trouvé' });
       }
@@ -147,6 +163,35 @@ class AuthController extends BaseController {
         // if(hashedPassword) console.log('Mot de passe crypté', hashedPassword);
 
         const resultPassword = await this.authModel.updatePasswordAgent(hashedPassword, user.data[0].id);
+        // if(resultPassword) console.log('Changement mot de passe', resultPassword);
+
+        this.sendResponse(res, 200, 'Un mot de passe de récupération sera envoyé à votre adresse mail')
+        
+      } else {
+        this.sendResponse(res, 400, 'Utilisateur non trouvé',  {email})
+      }
+    } catch (error) {
+      this.sendResponse(res, 500, 'Erreur de récupération', error);
+    }
+  }
+
+  async recovery(req, res) {
+    const { email } = req.body;
+
+    try {
+      const user = await this.authModel.checkMailUser(email);
+      console.log(user)
+      if (user.data.length) {
+        const password = this.generateRandomString(6);
+        const message = `Salut ${user.data[0].pseudo} !! Votre nouveau mot de passe est : ${password}`;
+        const resultNotif = await this.sendNotification(user.data[0].e_mail, message);
+        // if (resultNotif) console.log('Notification ', resultNotif);
+        
+        
+        const hashedPassword = await this.cryptPassword(password);
+        // if(hashedPassword) console.log('Mot de passe crypté', hashedPassword);
+
+        const resultPassword = await this.authModel.updatePasswordUser(hashedPassword, user.data[0].id);
         // if(resultPassword) console.log('Changement mot de passe', resultPassword);
 
         this.sendResponse(res, 200, 'Un mot de passe de récupération sera envoyé à votre adresse mail')

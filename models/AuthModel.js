@@ -28,6 +28,18 @@ class AuthModel extends Model {
     }
   }
 
+  async createLevelUser(id) {
+    console.log({id})
+    const sql = 'INSERT INTO detail_level (id_user) VALUES (?)';
+    const params = [id];
+    try {
+      const result = await this.execute(sql, params);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async readAgentByAuth(matricule, password) {
     
     const sql = 'SELECT * FROM agent WHERE pseudo = ? AND mdp = ?';
@@ -40,7 +52,11 @@ class AuthModel extends Model {
   }
   async readUserByAuth(matricule, password) {
     
-    const sql = 'SELECT * FROM user WHERE pseudo = ? AND mdp = ?';
+    const sql = `SELECT user.*, levels.designation AS 'level'
+                FROM user 
+                INNER JOIN detail_level ON detail_level.id_user = user.id
+                INNER JOIN levels ON levels.id = detail_level.id_level
+                WHERE pseudo = ? AND mdp = ?`;
     try {
       const user = await this.execute(sql, [matricule, password]);
       return user;
@@ -62,6 +78,17 @@ class AuthModel extends Model {
 
   async updatePasswordAgent(mdp, id) {
     const sql = 'UPDATE agent SET agent.mdp = ? WHERE agent.id = ?';
+
+    try {
+      const user = await this.execute(sql, [mdp, id]);
+      return user
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updatePasswordUser(mdp, id) {
+    const sql = 'UPDATE user SET user.mdp = ? WHERE user.id = ?';
 
     try {
       const user = await this.execute(sql, [mdp, id]);
