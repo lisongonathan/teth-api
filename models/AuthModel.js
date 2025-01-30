@@ -18,7 +18,7 @@ class AuthModel extends Model {
 
   async createUser(name, email, mdp) {
     console.log({name, email, mdp})
-    const sql = 'INSERT INTO user (pseudo, e_mail, mdp) VALUES (?, ?, ?)';
+    const sql = 'INSERT INTO user (pseudo, e_mail, mdp, parties) VALUES (?, ?, ?, 3)';
     const params = [name, email, mdp];
     try {
       const result = await this.execute(sql, params);

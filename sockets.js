@@ -21,7 +21,7 @@ module.exports = (io) => {
   io.on('connection', (socket) => {
     console.log('A user connected');
     console.log('Current Users', agentsConnected);
-
+    //Default event ON
     socket.on('authenticate', (token) => {
       try {
         const user = jwt.verify(token, process.env.JWT_SECRET);
@@ -66,6 +66,40 @@ module.exports = (io) => {
       }
     });
 
-    socket.emit('allCagnotes', sommeRebour);
+    
+    //Default event EMIT
+    io.emit('allCagnotes', sommeRebour);
+
+    //Response event ON
+    socket.on('changeSomme', payload =>{
+      console.log('Payload changeSomme', payload)
+
+      io.emit('allCagnote', sommeRebour - payload)
+    })
+
+    socket.on('allNotification', payload => {
+      console.log('Payload allNotification', payload)
+      let news = null;
+
+      if (payload) {
+        news = Controller.notificationsUser(payload)
+      }
+
+      socket.emit('allNotification', news)
+    })
+
+    socket.on('addNotification', payload => {
+      console.log('Payload addNotification', payload)
+      const news = Controller.newNotifcation(payload)
+      
+      socket.emit('allNotification', news)
+    })
+
+    socket.on('changeNotification', payload => {
+      console.log('Payload changeNotification', payload)
+      const news = Controller.readNotification(...payload)
+
+      socket.emit('allNotification', news)
+    })
   });
 };
