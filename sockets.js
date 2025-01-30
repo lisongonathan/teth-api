@@ -97,7 +97,7 @@ module.exports = (io) => {
 
     socket.on('changeNotification', async (payload) => {
       console.log('Payload changeNotification', payload)
-      const news = await Controller.readNotification(...payload)
+      const news = await Controller.readNotification(payload)
 
       socket.emit('allNotification', news)
     })
