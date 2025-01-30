@@ -77,27 +77,27 @@ module.exports = (io) => {
       io.emit('allCagnote', sommeRebour - payload)
     })
 
-    socket.on('allNotification', payload => {
+    socket.on('allNotification', async (payload) => {
       console.log('Payload allNotification', payload)
       let news = null;
 
       if (payload) {
-        news = Controller.notificationsUser(payload)
+        news = await Controller.notificationsUser(payload)
       }
 
       socket.emit('allNotification', news)
     })
 
-    socket.on('addNotification', payload => {
+    socket.on('addNotification', async (payload) => {
       console.log('Payload addNotification', payload)
-      const news = Controller.newNotifcation(payload)
+      const news = await Controller.newNotifcation(payload)
       
       socket.emit('allNotification', news)
     })
 
-    socket.on('changeNotification', payload => {
+    socket.on('changeNotification', async (payload) => {
       console.log('Payload changeNotification', payload)
-      const news = Controller.readNotification(...payload)
+      const news = await Controller.readNotification(...payload)
 
       socket.emit('allNotification', news)
     })
