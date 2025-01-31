@@ -33,7 +33,7 @@ class AppModel extends UserModel {
       const sql = 'UPDATE user SET user.solde = ? WHERE user.id = ?';
   
       try {
-        const user = await this.execute(sql, [parties, id]);
+        const user = await this.execute(sql, [solde, id]);
         return user
       } catch (error) {
         throw error;
