@@ -116,6 +116,7 @@ module.exports = (io) => {
     socket.on('newSolde', async (id) => {
       console.log('Payload newSolde id_user : ', id)
       const infoUser = await Controller.appModel.readUserById(id)
+      console.log(infoUser)
       socket.emit('newSolde', infoUser?.data?.solde)
     })
   });

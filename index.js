@@ -41,7 +41,7 @@ app.use((req, res, next) => {
         requests.shift(); // Supprimer les plus anciens logs
     }
 
-    console.log(JSON.stringify(requests, null, 2));
+    // console.log(JSON.stringify(requests, null, 2));
 
     next();
 });
