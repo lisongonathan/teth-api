@@ -113,11 +113,17 @@ module.exports = (io) => {
       socket.emit('allNotification', news)
     })
 
-    socket.on('newSolde', async (id) => {
+    socket.on('newSolde', (id) => {
       console.log('Payload newSolde id_user : ', id)
-      const infoUser = await Controller.appModel.readUserById(id)
-      console.log('Data',  infoUser)
-      socket.emit('newSolde', infoUser?.data?.solde)
+      Controller.appModel.readUserById(id)
+      .then(infoUser => {
+        console.log('Data',  infoUser)
+        socket.emit('newSolde', infoUser?.data?.solde)
+        
+      })
+      .catch(error => {
+        console.error('Error', error)
+      })
     })
   });
 };
