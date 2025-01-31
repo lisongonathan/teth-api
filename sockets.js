@@ -117,8 +117,8 @@ module.exports = (io) => {
       console.log('Payload newSolde id_user : ', id)
       Controller.appModel.readUserById(id)
       .then(infoUser => {
-        console.log('Data',  infoUser)
-        socket.emit('newSolde', infoUser[0].data?.solde)
+        console.log('Data',  infoUser.data)
+        socket.emit('newSolde', infoUser.data[0].solde)
         
       })
       .catch(error => {
