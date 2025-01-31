@@ -19,8 +19,8 @@ Controller.currentCagnote()
 
 module.exports = (io) => {
   io.on('connection', (socket) => {
-    console.log('A user connected');
-    console.log('Current Users', agentsConnected);
+    // console.log('A user connected');
+    // console.log('Current Users', agentsConnected);
     //Default event ON
     socket.on('authenticate', (token) => {
       try {
@@ -45,10 +45,10 @@ module.exports = (io) => {
             pseudo: user.matricule
           };
           agentsConnected.push(session);
-          console.log('User authenticated and connected:', agentsConnected);
+          // console.log('User authenticated and connected:', agentsConnected);
           socket.emit('authenticated', session);
         } else {
-          console.log('User already connected:', existingSession);
+          // console.log('User already connected:', existingSession);
           socket.emit('already_connected', existingSession);
         }
       } catch (error) {
@@ -61,7 +61,7 @@ module.exports = (io) => {
     socket.on('disconnect', () => {
       const index = agentsConnected.findIndex(agent => agent.socketId === socket.id);
       if (index !== -1) {
-        console.log('User disconnected:', agentsConnected[index]);
+        // console.log('User disconnected:', agentsConnected[index]);
         agentsConnected.splice(index, 1);
       }
     });
