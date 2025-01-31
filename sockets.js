@@ -78,7 +78,6 @@ module.exports = (io) => {
     })
 
     socket.on('allNotification', async (payload) => {
-      console.log('Payload allNotification', payload)
       let news = null;
 
       if (payload) {
