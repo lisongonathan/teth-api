@@ -28,6 +28,17 @@ class AppModel extends UserModel {
         throw error;
       }
     }
+
+    async updateSoldeUser(solde, id) {
+      const sql = 'UPDATE user SET user.solde = ? WHERE user.id = ?';
+  
+      try {
+        const user = await this.execute(sql, [parties, id]);
+        return user
+      } catch (error) {
+        throw error;
+      }
+    }
 }
 
 module.exports = AppModel;
