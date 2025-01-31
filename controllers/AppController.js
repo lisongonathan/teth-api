@@ -31,6 +31,7 @@ class AppController extends UserController {
     }
 
     async readNotification(data){
+        console.log('Read notification', data)
         await this.appModel.updateStatutNotification(data.statut, data.id)
 
         this.notificationsUser(data.id)
