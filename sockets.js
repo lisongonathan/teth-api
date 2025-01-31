@@ -110,6 +110,7 @@ module.exports = (io) => {
       const news = await Controller.readNotification(payload)
       console.log(news)
       socket.emit('allNotification', news)
+      socket.emit('depositRequest', payload.solde)
     })
   });
 };
