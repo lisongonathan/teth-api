@@ -32,9 +32,13 @@ class AppController extends UserController {
 
     async readNotification(data){
         console.log('Read notification', data)
-        await this.appModel.updateStatutNotification(data.statut, data.id)
+        let id = data[0].id
+        data.map(async (n) => {
+            await this.appModel.updateStatutNotification(n.statut, n.id)
+            
+        })
 
-        this.notificationsUser(data.id)
+        this.notificationsUser(id)
     }
 
     response (statut, message, data) {
