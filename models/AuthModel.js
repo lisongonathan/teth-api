@@ -83,7 +83,7 @@ class AuthModel extends Model {
                 FROM user 
                 INNER JOIN detail_level ON detail_level.id_user = user.id
                 INNER JOIN levels ON levels.id = detail_level.id_level
-                WHERE id = ?`;
+                WHERE user.id = ?`;
     try {
       const user = await this.execute(sql, [id]);
       return user;
