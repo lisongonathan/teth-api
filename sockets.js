@@ -108,9 +108,15 @@ module.exports = (io) => {
       await Controller.appModel.createNotification('Demande de depot effectuée, votre nouveau solde est ' + payload.solde + ' FC', payload.id_user)
 
       const news = await Controller.notificationsUser(payload.id_user)
-      console.log(news)
-      socket.emit('allNotification', news)
+      console.log(payload.solde)
       socket.emit('depositRequest', payload.solde)
+      socket.emit('allNotification', news)
+    })
+
+    socket.on('newSolde', async (id) => {
+      console.log('Payload newSolde', id)
+      const infoUser = await Controller.appModel.readUserById(id)
+      socket.emit('newSolde', infoUser?.data?.solde)
     })
   });
 };
