@@ -59,7 +59,7 @@ class AppController extends FinanceController {
         const {id_user, id_jeton} = req.body;
         const ref = `${id_user}.${id_jeton}.${Date.now()}`;
         const response = await this.appModel.createCmdToken(id_jeton, id_user, 'OK', ref)
-        const userInfo = await this.appModel.readUserById(id_user)?.data[0]
+        const userInfo = await this.appModel.readUserById(id_user)
         
         res.json(userInfo)
 
