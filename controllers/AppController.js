@@ -65,12 +65,14 @@ class AppController extends FinanceController {
         const payload = {
             id: userInfo.data[0].id,
             solde: parseFloat(userInfo.data[0].solde) - parseFloat(jetonInfo.data[0].mise),
-            parties: parseFloat(userInfo.data[0].parties) + parseFloat(jetonInfo.data[0].cote),
+            parties: parseInt(userInfo.data[0].parties) + parseInt(jetonInfo.data[0].cote) + parseInt(jetonInfo.data[0].bonus),
         }
 
         await this.appModel.updatePartiesUser(payload.parties, payload.id);
         await this.appModel.updateSoldeUser(payload.solde, payload.id);
-
+        const textNotification = `Félicitation vous avez acheté un jeton de ${jetonInfo.data[0].designation} et vous disposez maintenant de ${payload.parties} parties`
+        await this.newNotifcation({message: textNotification, id: payload.id})
+        
         res.json(payload);
 
     }
