@@ -1,7 +1,6 @@
-const AuthController = require('./AuthController');
+const UserController = require('./UserController');
 const FinanceModel = require('../models/FinanceModel');
-
-class FinanceController extends AuthController {
+class FinanceController extends UserController {
   constructor() {
     super();
     this.financeModel = new FinanceModel();
