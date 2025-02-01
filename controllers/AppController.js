@@ -55,6 +55,14 @@ class AppController extends FinanceController {
         res.json(tokens)
     }
 
+    async buyToken(req, res){
+        const {id_user, id_jeton} = req.body;
+        const ref = `${id_user}.${id_jeton}.${Date.now()}`;
+        const response = await this.appModel.createCmdToken(id_jeton, id_user, 'OK', ref)
+        res.json(response)
+
+    }
+
     response (statut, message, data) {
         return {
             statut,

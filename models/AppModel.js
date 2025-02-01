@@ -39,6 +39,17 @@ class AppModel extends FinanceModel {
         throw error;
       }
     }
+
+    async createCmdToken(jeton, user, statut, ref) {
+      const sql = 'INSERT INTO detail_jeton (id_jeton, id_user, statut, ref) VALUES (?, ?, ?, ?)';
+      const params = [jeton, user, statut, ref];
+      try {
+        const result = await this.execute(sql, params);
+        return result;
+      } catch (error) {
+        throw error;
+      }
+    }
 }
 
 module.exports = AppModel;

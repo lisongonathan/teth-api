@@ -10,5 +10,6 @@ router.post('/', (req, res) => authController.signin(req, res));
 router.post('/register', (req, res) => authController.signup(req, res));
 router.post('/recovery', (req, res) => authController.recovery(req, res));
 router.get('/jetons', (req, res) => authController.allTokens(req, res));
+router.post('/buyToken', (req, res) => authController.buyToken(req, res));
 
 module.exports = router;
