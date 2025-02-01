@@ -1,11 +1,13 @@
-const UserController = require('./UserController')
+const FinanceController = require('./FinanceController')
 const AppModel = require('../models/AppModel');
+const QuestionModel = require('../models/QuestionModel');
 
-class AppController extends UserController {
+class AppController extends FinanceController {
     constructor() {
         super();
 
         this.appModel = new AppModel();
+        this.quizModel = new QuestionModel();
     }
 
     async currentCagnote (){
@@ -39,6 +41,18 @@ class AppController extends UserController {
         })
 
         this.notificationsUser(id)
+    }
+
+    /**
+     * Renvoie la liste de tous les tokens
+     * @param {Request} req - La requ te
+     * @param {Response} res - La r ponse
+     * @returns {Promise<void>}
+     */
+    async allTokens (req, res) {
+        const tokens = await this.appModel.getAllJetons()
+        console.log('tokens', tokens)
+        res.json(tokens)
     }
 
     response (statut, message, data) {

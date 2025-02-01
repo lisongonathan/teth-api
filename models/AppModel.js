@@ -1,6 +1,6 @@
-const UserModel = require('./UserModel');
+const FinanceModel = require('./FinanceModel');
 
-class AppModel extends UserModel {
+class AppModel extends FinanceModel {
     constructor(){
         super()
     }
