@@ -9,7 +9,7 @@ class AppModel extends FinanceModel {
       const sql = `SELECT *
                   FROM notification
                   WHERE notification.id_user = ?
-                  ORDER BY DESC
+                  ORDER BY id DESC
                   LIMIT 5`;
       try {
         const result = await this.execute(sql, [id]);
