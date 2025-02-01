@@ -68,6 +68,9 @@ class AppController extends FinanceController {
             parties: parseFloat(userInfo.data[0].parties) + parseFloat(jetonInfo.data[0].cote),
         }
 
+        await this.appModel.updatePartiesUser(payload.parties, payload.id);
+        await this.appModel.updateSoldeUser(payload.solde, payload.id);
+
         res.json(payload);
 
     }
