@@ -59,9 +59,16 @@ class AppController extends FinanceController {
         const {id_user, id_jeton} = req.body;
         const ref = `${id_user}.${id_jeton}.${Date.now()}`;
         const response = await this.appModel.createCmdToken(id_jeton, id_user, 'OK', ref)
-        const userInfo = await this.appModel.readUserById(id_user)
-        
-        res.json(userInfo)
+        const userInfo = await this.appModel.readUserById(id_user);
+        const jetonInfo = await this.appModel.getJetonById(id_jeton);
+
+        const payload = {
+            id: userInfo.data[0].id,
+            solde: parseFloat(userInfo.data[0].solde) - parseFloat(jetonInfo.data[0].mise),
+            parties: parseFloat(userInfo.data[0].parties) + parseFloat(jetonInfo.data[0].cote),
+        }
+
+        res.json(payload);
 
     }
 

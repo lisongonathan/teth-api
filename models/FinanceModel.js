@@ -31,6 +31,18 @@ class FinanceModel extends UserModel {
                 
             }
     }
+    async getJetonById(id) {
+    
+        const sql = `SELECT *
+                    FROM jeton
+                    WHERE jeton.id = ?`;
+        try {
+            const user = await this.execute(sql, [id]);
+            return user;
+        } catch (error) {
+            throw error;
+        }
+    }
 
     async getVentesJetonsMensuelles() {
         const sql = `SELECT
