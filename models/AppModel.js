@@ -8,7 +8,9 @@ class AppModel extends FinanceModel {
     async getNotificationsByUser(id) {
       const sql = `SELECT *
                   FROM notification
-                  WHERE notification.id_user = ?`;
+                  WHERE notification.id_user = ?
+                  ORDER BY DESC
+                  LIMIT 5`;
       try {
         const result = await this.execute(sql, [id]);
         return result;
