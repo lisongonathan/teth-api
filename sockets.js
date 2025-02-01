@@ -125,5 +125,18 @@ module.exports = (io) => {
         console.error('Error', error)
       })
     })
+
+    socket.on('newPartie', (id) => {
+      console.log('Payload newPartie id_user : ', id)
+      Controller.appModel.readUserById(id)
+      .then(infoUser => {
+        console.log('Data',  infoUser.data)
+        socket.emit('newSolde', infoUser.data[0].parties)
+        
+      })
+      .catch(error => {
+        console.error('Error', error)
+      })
+    })
   });
 };
