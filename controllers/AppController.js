@@ -77,6 +77,13 @@ class AppController extends FinanceController {
 
     }
 
+    async jeu (req, res) {
+        const {id_user, id_categorie} = req.body;
+
+        const resultLastQuestions = await this.appModel.getHistoryQuizUser(id_user, id_categorie);
+        res.json(resultLastQuestions);
+    }
+
     response (statut, message, data) {
         return {
             statut,

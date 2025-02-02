@@ -94,6 +94,17 @@ class AppModel extends FinanceModel {
         throw error;
       }
     }
+
+    async createNewJeu(quiz1, quiz2, quiz3, partieId) {
+      const sql = 'INSERT INTO detail_partie (id_quizz_1, id_quizz_2, id_quizz_3, id_partie) VALUES (?, ?, ?, ?)';
+      const params = [quiz1, quiz2, quiz3, partieId];
+      try {
+        const result = await this.execute(sql, params);
+        return result.insertId;
+      } catch (error) {
+        throw error;
+      }
+    }
 }
 
 module.exports = AppModel;
