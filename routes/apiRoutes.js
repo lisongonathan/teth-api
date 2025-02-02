@@ -17,6 +17,6 @@ router.post('/recovery', (req, res) => authController.recovery(req, res));
 router.get('/jetons', (req, res) => appController.allTokens(req, res));
 router.post('/buyToken', (req, res) => appController.buyToken(req, res));
 router.get('/categories', (req, res) => questionController.categories(req, res));
-// router.post('')
+router.post('/categories', (req, res) => appController.jeu(req, res));
 
 module.exports = router;
