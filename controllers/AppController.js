@@ -84,7 +84,9 @@ class AppController extends FinanceController {
         // res.json(resultLastQuestions);
         const playedQuestions = resultLastQuestions.data.length ? resultLastQuestions.data.flatMap(row => [row.id_quizz_1, row.id_quizz_2, row.id_quizz_3]) : [];
         const resultNewQuestions = await this.appModel.getNewQuestions(id_categorie, playedQuestions);
-        res.json(resultNewQuestions);
+        const newPartie = await this.appModel.createPartie(id_user, id_categorie);
+        // res.json(resultNewQuestions);
+        res.json(newPartie);
     }
 
     response (statut, message, data) {
