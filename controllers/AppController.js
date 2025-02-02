@@ -78,8 +78,8 @@ class AppController extends FinanceController {
     }
 
     async jeu (req, res) {
-        const {id_user, id_categorie} = req.body;
-
+        const {id_user, id_categorie, parties} = req.body;
+        await this.appModel.updatePartiesUser(parties, id_user);
         const resultLastQuestions = await this.appModel.getHistoryQuizUser(id_user, id_categorie);
         // res.json(resultLastQuestions);
         const playedQuestions = resultLastQuestions.data.length ? resultLastQuestions.data.flatMap(row => [row.id_quizz_1, row.id_quizz_2, row.id_quizz_3]) : [];
