@@ -20,6 +20,37 @@ class AppModel extends FinanceModel {
       }
     }
 
+    async getHistoryQuizUser(userId, categorieId) {
+      const sql = `SELECT detail_partie.*, parties.id_user
+                  FROM detail_partie
+                  INNER JOIN parties ON parties.id = detail_partie.id_partie
+                  WHERE parties.id_user = ? AND parties.id_categorie = ?
+                `;
+      try {
+        const result = await this.execute(sql, [userId, categorieId]);
+        return result;
+  
+      } catch (error) {
+        throw error;
+      }
+    }
+
+    async getNewQuestions(categorieId, lastQuiz) {
+      const sql = `SELECT *
+                  FROM question
+                  WHERE question.id_categorie = ? AND question.id NOT IN (?)
+                  ORDER BY RAND()
+                  LIMIT 3
+                `;
+      try {
+        const result = await this.execute(sql, [categorieId, lastQuiz.length ? lastQuiz : [0]]);
+        return result;
+  
+      } catch (error) {
+        throw error;
+      }
+    }
+
     async updateStatutNotification(statut, id) {
       const sql = 'UPDATE notification SET statut = ? WHERE id = ?';
   
@@ -48,6 +79,17 @@ class AppModel extends FinanceModel {
       try {
         const result = await this.execute(sql, params);
         return result;
+      } catch (error) {
+        throw error;
+      }
+    }
+
+    async createPartie(userId, categorieId) {
+      const sql = 'INSERT INTO parties (id_user, id_categorie) VALUES (?, ?)';
+      const params = [userId, categorieId];
+      try {
+        const result = await this.execute(sql, params);
+        return result.insertId;
       } catch (error) {
         throw error;
       }
