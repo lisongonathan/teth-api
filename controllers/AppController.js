@@ -90,6 +90,29 @@ class AppController extends FinanceController {
         // res.json(newPartie.insertId);
     }
 
+    async resultJeu (req, res){
+        const {id_user, id_partie, solde, statut} = req.body;
+
+        let message;
+
+        if (statut == 'OK') {
+            message = `Félicitation vous avez remporté 2500Fc, ce qui remonte votre solde à ${solde} FC -:)`;
+        } else {
+            message = `Bravo pour vos efforts ! Vous n'avez pas perdu : vous avez appris et évolué pour la prochaine partie.`
+        }
+        await this.appModel.updateSoldeUser(solde, id_user);
+        await this.appModel.updateStatutPartie(statut, id_partie);
+        await this.appModel.createNotification(message, id_user)
+
+        res.json({
+            statut: 200,
+            message: 'Voulez vous rejouer une partie',
+            data:{
+                solde: solde
+            }
+        })
+    }
+
     response (statut, message, data) {
         return {
             statut,

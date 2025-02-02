@@ -62,6 +62,17 @@ class AppModel extends FinanceModel {
       }
     }
 
+    async updateStatutPartie(statut, id) {
+      const sql = 'UPDATE parties SET status = ? WHERE id = ?';
+  
+      try {
+        const user = await this.execute(sql, [statut, id]);
+        return user
+      } catch (error) {
+        throw error;
+      }
+    }
+
     async updateSoldeUser(solde, id) {
       const sql = 'UPDATE user SET user.solde = ? WHERE user.id = ?';
   
