@@ -89,7 +89,7 @@ class AppModel extends FinanceModel {
       const params = [userId, categorieId];
       try {
         const result = await this.execute(sql, params);
-        return result.insertId;
+        return result.data;
       } catch (error) {
         throw error;
       }
