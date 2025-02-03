@@ -43,6 +43,12 @@ class AppController extends FinanceController {
         this.notificationsUser(id)
     }
 
+    async checkCagnote(req, res){
+
+        const cagnote = await this.currentCagnote();
+        res.json(cagnote)
+    }
+
     /**
      * Renvoie la liste de tous les tokens
      * @param {Request} req - La requ te
