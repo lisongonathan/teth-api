@@ -144,5 +144,13 @@ module.exports = (io) => {
         console.error('Error', error)
       })
     })
+    
+    socket.on('winPartie', async (payload) => {
+      console.log('Payload winPartie', payload)
+
+      const data = await Controller.currentCagnote();
+
+      io.emit('allCagnotes', data)  
+    })
   });
 };
