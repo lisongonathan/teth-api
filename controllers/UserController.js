@@ -50,10 +50,10 @@ class UserController extends AuthController {
 
     const cagnotes = await this.userModel.getAllCagnotes();
     const partiesGagnees = await this.userModel.getPartiesByStatus('OK');
-    // console.log('raws parties', partiesGagnees);
+    // console.log('raws parties', partiesGagnee"s);
     
     totalCagnotes += cagnotes.data.reduce((acc, cagnote) => acc + parseFloat(cagnote.amount), 0);      
-    totalMisesGagnees += partiesGagnees.data.reduce((acc, partie) => acc + parseFloat(partie.mise), 0);
+    totalMisesGagnees += partiesGagnees.data.reduce((acc, partie) => acc + 2500, 0);
 
     // console.log("Total parties", totalMisesGagnees);
 
