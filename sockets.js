@@ -47,9 +47,13 @@ module.exports = (io) => {
           agentsConnected.push(session);
           // console.log('User authenticated and connected:', agentsConnected);
           socket.emit('authenticated', session);
+          //Default event EMIT
+          io.emit('allCagnotes', sommeRebour);
         } else {
           // console.log('User already connected:', existingSession);
           socket.emit('already_connected', existingSession);
+          //Default event EMIT
+          io.emit('allCagnotes', sommeRebour);
         }
       } catch (error) {
         console.log('Authentication error:', error);
@@ -85,6 +89,8 @@ module.exports = (io) => {
       }
 
       socket.emit('allNotification', news)
+      //Default event EMIT
+      io.emit('allCagnotes', sommeRebour);
     })
 
     socket.on('addNotification', async (payload) => {
