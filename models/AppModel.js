@@ -116,6 +116,25 @@ class AppModel extends FinanceModel {
         throw error;
       }
     }
+
+    async getLeaderboard() {
+      const sql = `
+        SELECT u.id, u.photo, u.pseudo,
+               IFNULL(COUNT(p.id) * 3, 0) as totalQuestionsOk,
+               IFNULL(COUNT(p.id) * 2500, 0) as totalGains
+        FROM user u
+        LEFT JOIN parties p ON u.id = p.id_user AND p.status = 'OK'
+        GROUP BY u.id
+        ORDER BY totalGains DESC
+        LIMIT 10
+      `;
+      try {
+        const result = await this.execute(sql);
+        return result;
+      } catch (error) {
+        throw error;
+      }
+    }
 }
 
 module.exports = AppModel;

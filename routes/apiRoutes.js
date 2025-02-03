@@ -12,6 +12,14 @@ const questionController = new QuestionController();
 
 // Route pour récupérer tous les utilisateurs
 router.post('/', (req, res) => authController.signin(req, res));
+router.get('/leaderboard', async (req, res) => {
+  try {
+    const leaderboard = await AppModel.getLeaderboard();
+    res.json(leaderboard);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 router.post('/register', (req, res) => authController.signup(req, res));
 router.post('/recovery', (req, res) => authController.recovery(req, res));
 router.get('/jetons', (req, res) => appController.allTokens(req, res));
