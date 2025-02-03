@@ -14,7 +14,7 @@ const questionController = new QuestionController();
 router.post('/', (req, res) => authController.signin(req, res));
 router.get('/leaderboard', async (req, res) => {
   try {
-    const leaderboard = await AppModel.getLeaderboard();
+    const leaderboard = await appController.appModel.getLeaderboard();
     res.json(leaderboard);
   } catch (error) {
     res.status(500).json({ error: error.message });
